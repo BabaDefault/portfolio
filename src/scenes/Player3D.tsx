@@ -160,9 +160,9 @@ function applyPose(p: PlayerObject, pose: Pose, t: number) {
       break;
     }
     case 'sit':
-      // sitting on a ledge: legs out over the edge, hands resting on the block either side
-      s.rightLeg.rotation.set(-1.35, 0, 0.06);
-      s.leftLeg.rotation.set(-1.3, 0, -0.06);
+      // sitting on a flat block: legs stretched out in front, hands resting either side
+      s.rightLeg.rotation.set(-1.52, 0, 0.05);
+      s.leftLeg.rotation.set(-1.48, 0, -0.05);
       s.rightArm.rotation.set(-0.25 + breathe * 0.02, 0, 0.18);
       s.leftArm.rotation.set(-0.25 + breathe * 0.02, 0, -0.18);
       p.position.y = -10.5;

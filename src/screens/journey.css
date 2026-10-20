@@ -18,7 +18,7 @@
 
 .jr-body {
   display: grid;
-  grid-template-columns: minmax(0, 240px) minmax(0, 1fr); /* small map, wide details card */
+  grid-template-columns: minmax(0, 290px) minmax(0, 1fr); /* map + details card */
   gap: 16px;
   align-items: start;
 }
@@ -231,7 +231,7 @@
   .jr-body {
     grid-template-columns: minmax(0, 1fr);
   }
-  .jr-map { width: min(100%, 240px); margin-inline: auto; }
+  .jr-map { width: min(100%, 290px); margin-inline: auto; }
   .jr-card { min-height: 0; }
 }
 

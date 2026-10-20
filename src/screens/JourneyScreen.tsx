@@ -200,7 +200,7 @@ export default function JourneyScreen() {
       title="Treasure Map"
       aside={`${count} waypoint${count === 1 ? '' : 's'}`}
       variant="parchment"
-      width={640}
+      width={680}
       className="jr-panel"
       labelledBy="jr-title"
     >
