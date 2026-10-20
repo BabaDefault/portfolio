@@ -140,7 +140,7 @@ export type ActiveQuest = {
   title: string;
   type: QuestType;
   detail: string;
-  progress: number; // 0–100
+  progress: number;
   link?: string;
 };
 
@@ -159,14 +159,12 @@ export type SideQuest = {
   icon: IconName;
 };
 
-/** Hobbies & life outside the editor. */
+/** Hobbies & life outside the editor (shown as a 2×2 grid, so keep it to 4). */
 export const sideQuests: SideQuest[] = [
-  { title: 'Gaming', detail: 'I grew up watching alot of Minecraft and was addicted to it during highschool. Now I mainly play Valorant and League of Legends.', icon: 'craft-keyboard' },
+  { title: 'Gaming', detail: 'I grew up watching alot of Minecraft and was addicted to it during highschool. Now I mainly play Valorant and League of Legends', icon: 'craft-keyboard' },
   { title: 'Gym', detail: 'Started going again this year after being very inconsistent throughout highschool', icon: 'heart' },
-  { title: 'Music', detail: 'Lo-fi playlists for every coding session. [PLACEHOLDER]', icon: 'item-bolt' },
-  { title: 'Photography', detail: 'Street shots around the city. [PLACEHOLDER]', icon: 'item-spyglass' },
-  { title: 'Cooking', detail: 'One new recipe every week. [PLACEHOLDER]', icon: 'hunger' },
-  { title: 'Exploring', detail: 'Coastal walks and new cafes. [PLACEHOLDER]', icon: 'contact-location' },
+  { title: 'Eating', detail: 'I LOVE eating, I enjoy trying new places and eating out whenever I can. Asian cuisine is my favourite (especially Malatang)', icon: 'hunger' },
+  { title: 'Going Out', detail: 'I always enjoy going out with my friends, whether its just for a quick feed or walking around the same area for 3 hours', icon: 'contact-location' },
 ];
 
 export const contact = {
@@ -181,9 +179,9 @@ export const contact = {
 };
 
 export const credits = {
-  heading: 'Thanks for playing',
+  heading: 'Thanks for taking the time to read my',
   lines: [
-    'You reached the end of this world.',
+    'You reached the end of my.',
     'But every world has another seed.',
     'Somewhere, a new build is waiting.',
     'Bring the idea. I will bring the blocks.',
