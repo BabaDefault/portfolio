@@ -159,12 +159,12 @@ export type SideQuest = {
   icon: IconName;
 };
 
-/** Hobbies & life outside the editor (shown as a 2×2 grid, so keep it to 4). */
+/** Hobbies & life outside the editor. */
 export const sideQuests: SideQuest[] = [
   { title: 'Gaming', detail: 'I grew up watching alot of Minecraft and was addicted to it during highschool. Now I mainly play Valorant and League of Legends', icon: 'craft-keyboard' },
   { title: 'Gym', detail: 'Started going again this year after being very inconsistent throughout highschool', icon: 'heart' },
   { title: 'Eating', detail: 'I LOVE eating, I enjoy trying new places and eating out whenever I can. Asian cuisine is my favourite (especially Malatang)', icon: 'hunger' },
-  { title: 'Going Out', detail: 'I always enjoy going out with my friends, whether its just for a quick feed or walking around the same area for 3 hours', icon: 'contact-location' },
+  { title: 'Going Out', detail: 'I always enjoy spending time out with my friends, whether its just for a quick feed or walking around the same area for 3 hours', icon: 'contact-location' },
 ];
 
 export const contact = {
@@ -179,12 +179,16 @@ export const contact = {
 };
 
 export const credits = {
-  heading: 'Thanks for taking the time to read my',
+  heading: 'Thanks for playing',
   lines: [
-    'You reached the end of my.',
-    'But every world has another seed.',
-    'Somewhere, a new build is waiting.',
-    'Bring the idea. I will bring the blocks.',
+    'You reached the end of my portfolio.',
+    'I really appreciate the time',
+    'You\'ve spent reading it!',
+    'But....',
+    'Every world has another seed.',
+    'Somewhere... ',
+    'A new idea is waiting',
+    'Waiting to be made!'
   ],
   roles: [
     { role: 'Design & Code', name: 'Jason Tjandra' },
