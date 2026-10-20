@@ -1,0 +1,146 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 16px;
+  line-height: 1.4;
+  overflow: hidden;
+  -webkit-font-smoothing: none;
+  -moz-osx-font-smoothing: grayscale;
+  image-rendering: pixelated;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+a {
+  color: var(--mc-aqua);
+}
+
+:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Shared text helpers ---------- */
+.mc-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-shadow: var(--text-shadow);
+  letter-spacing: 0.02em;
+}
+
+.mc-dim {
+  color: var(--text-dim);
+}
+
+.mc-label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+}
+
+/* ---------- App layout ---------- */
+.app {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.screen-layer {
+  position: absolute;
+  inset: 0;
+  padding: 72px var(--gutter) calc(var(--hotbar-h) + 48px);
+  display: flex;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Screens choose placement via these helpers */
+.place-left { justify-content: flex-start; align-items: center; }
+.place-right { justify-content: flex-end; align-items: center; }
+.place-center { justify-content: center; align-items: center; }
+.panel-y-top { align-items: flex-start; }
+.panel-y-bottom { align-items: flex-end; }
+
+/* Readability backing behind a centred panel on busy images */
+.has-scrim::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(ellipse 45% 55% at 50% 48%, rgba(5, 2, 12, 0.72), rgba(5, 2, 12, 0.35) 60%, transparent 85%);
+}
+
+@media (min-width: 900px) {
+  .place-left { padding-left: var(--panel-inset, 4vw); }
+  .place-right { padding-right: var(--panel-inset, 4vw); }
+}
+
+.screen-enter {
+  animation: screen-in 360ms var(--ease-out) both;
+}
+
+@keyframes screen-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.terrain-fade {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 5;
+}
+.terrain-fade.active {
+  animation: terrain 420ms ease-out both;
+}
+@keyframes terrain {
+  0% { opacity: 0.85; }
+  100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

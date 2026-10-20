@@ -1,0 +1,210 @@
+.profile-panel {
+  margin-block: auto;
+}
+.profile-panel .panel__title {
+  font-size: 14px;
+}
+.profile-panel .panel__aside {
+  color: #3f3f3f;
+}
+
+/* ---------- Top: armor | preview | traits ---------- */
+.profile-top {
+  display: grid;
+  grid-template-columns: auto minmax(96px, 124px) minmax(0, 1fr);
+  grid-template-areas: 'armor preview traits';
+  gap: 10px;
+  align-items: stretch;
+}
+
+.profile-armor {
+  grid-area: armor;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.profile-preview {
+  grid-area: preview;
+  position: relative;
+  min-height: 188px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 8px 4px 6px;
+  overflow: hidden;
+  background: #000;
+  box-shadow:
+    inset 2px 2px 0 var(--slot-lo),
+    inset -2px -2px 0 var(--slot-hi);
+  border: 2px solid #000;
+}
+.profile-preview::before {
+  /* faint floor glow so the figure reads against black */
+  content: '';
+  position: absolute;
+  left: 15%;
+  right: 15%;
+  bottom: 22px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.08);
+}
+.profile-preview__figure {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  flex: 1;
+  align-items: flex-end;
+}
+.profile-preview__name {
+  position: relative;
+  margin-top: 4px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #3f3f3f;
+}
+
+.profile-traits {
+  grid-area: traits;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 6px;
+}
+.profile-traits__row {
+  padding: 4px 8px 5px;
+  background: #b4b4b4;
+  box-shadow:
+    inset 2px 2px 0 #8b8b8b,
+    inset -2px -2px 0 #dcdcdc;
+}
+.profile-traits dt {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #5a5a5a;
+}
+.profile-traits dd {
+  margin: 1px 0 0;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.2;
+  color: #1f1f1f;
+  overflow-wrap: anywhere;
+}
+
+/* ---------- Slot + tooltip ---------- */
+.profile-tip {
+  position: relative;
+  display: inline-flex;
+}
+.profile-tip__slot:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 0;
+  box-shadow: 0 0 0 4px #000;
+}
+.profile-tip__box .mc-tooltip {
+  white-space: normal;
+}
+.profile-tip--start .mc-tooltip {
+  left: 0;
+  transform: none;
+}
+.profile-tip--end .mc-tooltip {
+  left: auto;
+  right: 0;
+  transform: none;
+}
+.profile-tip__kind {
+  color: var(--mc-gray);
+  font-size: 12px;
+}
+
+/* ---------- Bio ---------- */
+.profile-heading {
+  margin: 16px 0 6px;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: #3f3f3f;
+}
+.profile-bio {
+  margin: 0;
+  padding: 10px 12px;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.45;
+  color: #121212;
+  background: var(--slot-bg);
+  box-shadow:
+    inset 2px 2px 0 var(--slot-lo),
+    inset -2px -2px 0 var(--slot-hi);
+}
+
+/* ---------- Hotbar ---------- */
+.profile-hotbar {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(9, minmax(0, 1fr));
+  gap: 2px;
+}
+.profile-hotbar li {
+  display: flex;
+  min-width: 0;
+}
+.profile-hotbar .profile-tip {
+  width: 100%;
+}
+.profile-hotbar .slot {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  max-width: 48px;
+}
+.profile-hotbar .pixel-icon {
+  width: 64%;
+  height: auto;
+}
+.profile-hotbar__letter {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: #fff;
+  text-shadow: 1px 1px 0 #3f3f3f;
+}
+
+/* ---------- Actions ---------- */
+.profile-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (max-width: 520px) {
+  .profile-panel {
+    padding: 14px;
+  }
+  .profile-top {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'armor preview'
+      'traits traits';
+  }
+  .profile-traits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .profile-actions .mc-btn {
+    width: 100%;
+  }
+}

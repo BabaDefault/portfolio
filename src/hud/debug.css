@@ -1,0 +1,48 @@
+/* ---------- F3 debug overlay ---------- */
+.f3 {
+  position: absolute;
+  inset: 10px 12px auto 12px;
+  z-index: 11;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.35;
+  color: #fff;
+  text-shadow: 2px 2px 0 #3f3f3f;
+  pointer-events: none;
+}
+.f3__col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  min-width: 0;
+}
+.f3__col--right {
+  align-items: flex-end;
+  /* keep clear of the sound toggle in the top-right corner */
+  margin-top: 44px;
+}
+.f3__line {
+  width: fit-content;
+  max-width: 100%;
+  padding: 0 4px;
+  background: rgba(80, 80, 80, 0.55);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 640px) {
+  .f3 {
+    font-size: 11px;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .f3__col--right {
+    align-items: flex-start;
+    margin-top: 0;
+  }
+}

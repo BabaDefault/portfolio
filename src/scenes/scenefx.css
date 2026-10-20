@@ -1,0 +1,227 @@
+.fx-root {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.fx-box {
+  position: absolute;
+}
+.fx-box > * {
+  position: absolute;
+}
+
+/* ---------- Glow ---------- */
+/* --fx-boost scales every glow; strengths in fx/*.ts stay readable as 0–1. */
+.fx-root { --fx-boost: 1.35; }
+.fx-glow {
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, var(--fx-color) 0%, color-mix(in srgb, var(--fx-color) 55%, transparent) 22%, transparent 68%);
+  mix-blend-mode: screen;
+  mix-blend-mode: plus-lighter; /* additive light; falls back to screen */
+  opacity: min(1, calc(var(--fx-strength) * var(--fx-boost)));
+}
+.fx-glow--fire { animation: fx-fire 1.4s steps(7) infinite; }
+.fx-glow--pulse { animation: fx-pulse 3.2s ease-in-out infinite; }
+.fx-glow--sway { animation: fx-sway 3.6s ease-in-out infinite; }
+@keyframes fx-sway {
+  0%, 100% { translate: -10% 0; opacity: min(1, calc(var(--fx-strength) * var(--fx-boost))); }
+  50% { translate: 10% 0; opacity: calc(var(--fx-strength) * var(--fx-boost) * 0.7); }
+}
+@keyframes fx-fire {
+  0%, 100% { opacity: min(1, calc(var(--fx-strength) * var(--fx-boost))); scale: 1; }
+  15% { opacity: calc(var(--fx-strength) * var(--fx-boost) * 0.55); scale: 0.92; }
+  40% { opacity: min(1, calc(var(--fx-strength) * var(--fx-boost) * 1.2)); scale: 1.08; }
+  60% { opacity: calc(var(--fx-strength) * var(--fx-boost) * 0.7); scale: 0.96; }
+  80% { opacity: min(1, calc(var(--fx-strength) * var(--fx-boost) * 1.05)); scale: 1.03; }
+}
+@keyframes fx-pulse {
+  0%, 100% { opacity: calc(var(--fx-strength) * var(--fx-boost) * 0.2); scale: 0.88; }
+  50% { opacity: min(1, calc(var(--fx-strength) * var(--fx-boost))); scale: 1.08; }
+}
+
+/* ---------- Smoke (square Minecraft-style puffs) ---------- */
+.fx-smoke {
+  transform: translate(-50%, -100%);
+}
+.fx-smoke span {
+  position: absolute;
+  bottom: 0;
+  width: var(--fx-puff);
+  height: var(--fx-puff);
+  background: var(--fx-color);
+  opacity: 0;
+  animation: fx-smoke 4.4s linear infinite;
+}
+@keyframes fx-smoke {
+  0% { transform: translate(0, 0) scale(0.6); opacity: 0; }
+  10% { opacity: 0.8; }
+  60% { opacity: 0.45; }
+  100% { transform: translate(30%, calc(var(--fx-puff) * -12)) scale(1.5); opacity: 0; }
+}
+
+/* ---------- God rays ---------- */
+/* Container spans the image box from the light source, so beam width (%) and length (%) are relative to the image. */
+.fx-rays {
+  width: 100%;
+  height: 100%;
+}
+.fx-rays span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: var(--fx-len);
+  min-height: 300px;
+  translate: -50% 0;
+  transform-origin: 50% 0;
+  background: linear-gradient(to bottom, var(--fx-color), transparent 85%);
+  mix-blend-mode: screen;
+  filter: blur(6px);
+  opacity: 0;
+  animation: fx-ray 7s ease-in-out infinite;
+}
+@keyframes fx-ray {
+  0%, 100% { opacity: calc(var(--fx-strength) * 0.3); }
+  50% { opacity: var(--fx-strength); }
+}
+
+/* ---------- Particles ---------- */
+.fx-particles {
+  image-rendering: pixelated;
+}
+
+/* ---------- Water shimmer ---------- */
+.fx-shimmer {
+  background: repeating-linear-gradient(100deg, transparent 0 18px, var(--fx-color) 18px 22px, transparent 22px 46px);
+  background-size: 200% 100%;
+  mix-blend-mode: overlay;
+  -webkit-mask: radial-gradient(ellipse at center, #000 40%, transparent 72%);
+  mask: radial-gradient(ellipse at center, #000 40%, transparent 72%);
+  animation: fx-shimmer 6s linear infinite;
+}
+@keyframes fx-shimmer {
+  from { background-position: 0 0; }
+  to { background-position: 200% 0; }
+}
+
+/* ---------- Glints (pixel sparkle: a square with a 4-point cross) ---------- */
+.fx-glint {
+  width: var(--fx-size);
+  height: var(--fx-size);
+  background: var(--fx-color);
+  box-shadow:
+    var(--fx-size) 0 0 0 color-mix(in srgb, var(--fx-color) 55%, transparent),
+    calc(var(--fx-size) * -1) 0 0 0 color-mix(in srgb, var(--fx-color) 55%, transparent),
+    0 var(--fx-size) 0 0 color-mix(in srgb, var(--fx-color) 55%, transparent),
+    0 calc(var(--fx-size) * -1) 0 0 color-mix(in srgb, var(--fx-color) 55%, transparent),
+    0 0 6px 1px color-mix(in srgb, var(--fx-color) 60%, transparent);
+  translate: -50% -50%;
+  opacity: 0;
+  animation: fx-glint 2.6s ease-in-out infinite;
+}
+@keyframes fx-glint {
+  0%, 100% { opacity: 0; scale: 0.4; }
+  45%, 55% { opacity: 1; scale: 1; }
+}
+
+/* ---------- Bubbles ---------- */
+.fx-bubbles { transform: translate(-50%, -100%); }
+.fx-bubbles span {
+  position: absolute;
+  bottom: 0;
+  width: 4px;
+  height: 4px;
+  background: var(--fx-color);
+  box-shadow: 0 0 4px var(--fx-color);
+  opacity: 0;
+  animation: fx-bubble 2.2s ease-in infinite;
+}
+@keyframes fx-bubble {
+  0% { transform: translateY(0); opacity: 0; }
+  15% { opacity: 0.9; }
+  85% { opacity: 0.7; }
+  100% { transform: translateY(-900%); opacity: 0; }
+}
+
+/* ---------- Flow (lavafalls / waterfalls) ---------- */
+.fx-flow {
+  background: repeating-linear-gradient(180deg, transparent 0 14px, var(--fx-color) 14px 22px, transparent 22px 34px);
+  background-size: 100% 68px;
+  mix-blend-mode: screen;
+  mix-blend-mode: plus-lighter;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+  mask: linear-gradient(90deg, transparent, #000 30%, #000 70%, transparent);
+  animation: fx-flow var(--fx-speed) linear infinite;
+}
+@keyframes fx-flow {
+  from { background-position: 0 0; }
+  to { background-position: 0 68px; }
+}
+
+/* ---------- Caustics (moving light ripples) ---------- */
+.fx-caustics {
+  background:
+    radial-gradient(ellipse 18% 10% at 20% 30%, var(--fx-color), transparent 70%),
+    radial-gradient(ellipse 14% 8% at 60% 60%, var(--fx-color), transparent 70%),
+    radial-gradient(ellipse 16% 9% at 85% 25%, var(--fx-color), transparent 70%),
+    radial-gradient(ellipse 12% 7% at 40% 85%, var(--fx-color), transparent 70%);
+  background-size: 60% 60%;
+  mix-blend-mode: screen;
+  opacity: var(--fx-strength);
+  -webkit-mask: radial-gradient(ellipse at center, #000 45%, transparent 75%);
+  mask: radial-gradient(ellipse at center, #000 45%, transparent 75%);
+  animation: fx-caustics 9s ease-in-out infinite alternate;
+}
+@keyframes fx-caustics {
+  0% { background-position: 0 0, 30% 20%, 60% 40%, 20% 70%; }
+  100% { background-position: 40% 30%, 0 50%, 20% 10%, 70% 30%; }
+}
+
+/* ---------- Fog band ---------- */
+.fx-fog {
+  left: -10%;
+  width: 120%;
+  background:
+    radial-gradient(ellipse 30% 60% at 20% 50%, var(--fx-color), transparent 70%),
+    radial-gradient(ellipse 25% 50% at 60% 40%, var(--fx-color), transparent 70%),
+    radial-gradient(ellipse 30% 60% at 95% 55%, var(--fx-color), transparent 70%);
+  background-size: 50% 100%;
+  background-repeat: repeat-x;
+  opacity: var(--fx-strength);
+  filter: blur(14px);
+  animation: fx-fog 40s linear infinite;
+}
+@keyframes fx-fog {
+  from { background-position: 0 0; }
+  to { background-position: 100% 0; }
+}
+
+/* ---------- ?fx coordinate helper ---------- */
+.fx-mark {
+  transform: translate(-50%, -50%);
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--mc-yellow);
+  color: var(--mc-yellow);
+  font: 12px var(--font-ui);
+  white-space: nowrap;
+}
+.fx-debug-hint {
+  position: absolute;
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--mc-yellow);
+  font: 13px var(--font-ui);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fx-glow, .fx-smoke span, .fx-rays span, .fx-shimmer, .fx-fog, .fx-glint, .fx-flow, .fx-caustics { animation: none !important; }
+  .fx-bubbles { display: none; }
+  .fx-glint { opacity: 0.6; }
+  .fx-smoke { display: none; }
+}

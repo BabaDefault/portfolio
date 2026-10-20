@@ -1,0 +1,228 @@
+.skills-panel {
+  margin-block: auto;
+}
+.skills-panel .panel__aside {
+  color: var(--mc-light-purple);
+  opacity: 0.85;
+}
+
+/* ---------- Brewing area ---------- */
+.skills-stand {
+  display: grid;
+  grid-template-columns: 92px auto minmax(0, 1fr);
+  grid-template-areas: 'fuel brew detail';
+  gap: 16px;
+  align-items: center;
+  padding: 14px;
+  background: #2a2a30;
+  border: 2px solid #000;
+  box-shadow:
+    inset 2px 2px 0 #111,
+    inset -2px -2px 0 #4a4a52;
+}
+
+.skills-stand__fuel {
+  grid-area: fuel;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.skills-stand__label {
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.skills-stand__value {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--mc-gold);
+  text-shadow: 2px 2px 0 #3f2a00;
+}
+.skills-fuel .mc-progress__fill {
+  background: linear-gradient(180deg, #ffe066 0 30%, #ffaa00 30% 70%, #c45a00 70% 100%);
+}
+
+.skills-stand__brew {
+  grid-area: brew;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.skills-stand__slot {
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  background: var(--slot-dark-bg);
+  box-shadow:
+    inset 2px 2px 0 #000,
+    inset -2px -2px 0 #3a3a42;
+  animation: skills-swap 260ms var(--ease-out) both;
+}
+@keyframes skills-swap {
+  from { transform: translateY(6px) scale(0.92); opacity: 0.4; }
+  to { transform: none; opacity: 1; }
+}
+
+/* Bubbles column */
+.skills-bubbles {
+  position: relative;
+  width: 14px;
+  height: 96px;
+  background: #15151a;
+  box-shadow: inset 2px 2px 0 #000, inset -2px -2px 0 #3a3a42;
+  overflow: hidden;
+}
+.skills-bubbles__b {
+  position: absolute;
+  bottom: -6px;
+  width: 4px;
+  height: 4px;
+  background: var(--potion-color, #fff);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+  animation: skills-bubble 1.8s steps(12) infinite;
+}
+.skills-bubbles__b:nth-child(1) { left: 3px; animation-delay: 0s; }
+.skills-bubbles__b:nth-child(2) { left: 7px; animation-delay: 0.36s; width: 3px; height: 3px; }
+.skills-bubbles__b:nth-child(3) { left: 4px; animation-delay: 0.72s; }
+.skills-bubbles__b:nth-child(4) { left: 8px; animation-delay: 1.08s; width: 2px; height: 2px; }
+.skills-bubbles__b:nth-child(5) { left: 5px; animation-delay: 1.44s; width: 3px; height: 3px; }
+@keyframes skills-bubble {
+  0% { transform: translateY(0); opacity: 0; }
+  10% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { transform: translateY(-104px); opacity: 0; }
+}
+
+.skills-stand__detail {
+  grid-area: detail;
+  min-width: 0;
+}
+.skills-stand__name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #fff;
+  text-shadow: var(--text-shadow);
+  overflow-wrap: anywhere;
+}
+.skills-effect {
+  margin: 4px 0 0;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  color: #8a8aff;
+  text-shadow: 1px 1px 0 #15153f;
+}
+.skills-effect__dur {
+  color: inherit;
+}
+.skills-stand__text {
+  margin: 8px 0 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--text-dim);
+}
+
+/* ---------- Potion grid ---------- */
+.skills-grid {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.skills-grid li {
+  display: flex;
+  min-width: 0;
+}
+.skills-potion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  padding: 6px;
+  text-align: left;
+  background: #1e1e24;
+  border: 2px solid #000;
+  box-shadow:
+    inset 2px 2px 0 #3a3a42,
+    inset -2px -2px 0 #111;
+  cursor: pointer;
+}
+.skills-potion:hover {
+  background: #2b2b34;
+}
+.skills-potion.is-selected {
+  background: #3a3550;
+  border-color: #fff;
+}
+.skills-potion:focus-visible {
+  outline: 2px solid var(--mc-yellow);
+  outline-offset: 2px;
+}
+.skills-potion__slot {
+  --slot-size: 42px;
+}
+.skills-potion.is-selected .skills-potion__slot::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  background: rgba(255, 255, 255, 0.18);
+}
+.skills-potion__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.skills-potion__name {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.2;
+  color: #fff;
+  text-shadow: 1px 1px 0 #3f3f3f;
+  overflow-wrap: anywhere;
+}
+.skills-potion__dur {
+  margin-top: 2px;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  line-height: 1;
+  color: #8a8aff;
+}
+
+.skills-hint {
+  font-family: var(--font-ui);
+  color: var(--text-dim);
+}
+
+@media (max-width: 520px) {
+  .skills-panel {
+    padding: 14px;
+  }
+  .skills-stand {
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      'brew fuel'
+      'detail detail';
+    gap: 12px;
+  }
+  .skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skills-stand__slot { animation: none; }
+  .skills-bubbles__b { animation: none; opacity: 0; }
+  .skills-bubbles__b:nth-child(odd) { opacity: 1; }
+  .skills-bubbles__b:nth-child(1) { bottom: 18px; }
+  .skills-bubbles__b:nth-child(3) { bottom: 48px; }
+  .skills-bubbles__b:nth-child(5) { bottom: 76px; }
+}

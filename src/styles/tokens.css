@@ -1,0 +1,71 @@
+:root {
+  /* Fonts */
+  --font-display: 'Silkscreen', 'Pixelify Sans', monospace;
+  --font-ui: 'Pixelify Sans', 'Silkscreen', monospace;
+  --font-mono: 'VT323', ui-monospace, monospace;
+
+  /* Base */
+  --bg: #0d0d0f;
+  --text: #f2f2f2;
+  --text-dim: #a8a8a8;
+  --text-faint: #6e6e6e;
+  --text-shadow: 2px 2px 0 #3f3f3f;
+  --text-shadow-dark: 2px 2px 0 #000;
+
+  /* Minecraft palette */
+  --mc-yellow: #ffff55;
+  --mc-gold: #ffaa00;
+  --mc-green: #55ff55;
+  --mc-dark-green: #00aa00;
+  --mc-aqua: #55ffff;
+  --mc-blue: #5555ff;
+  --mc-red: #ff5555;
+  --mc-purple: #aa00aa;
+  --mc-light-purple: #ff55ff;
+  --mc-gray: #aaaaaa;
+  --xp: #80ff20;
+  --xp-dark: #3d7a0f;
+  --emerald: #17dd62;
+
+  /* Panels */
+  --panel-dark-bg: rgba(16, 16, 20, 0.86);
+  --panel-dark-border: #4a4a4f;
+  --panel-dark-inner: #2a2a30;
+  --panel-stone-bg: #c6c6c6;
+  --panel-stone-hi: #ffffff;
+  --panel-stone-lo: #555555;
+  --panel-parchment-bg: #e9dcb4;
+  --panel-parchment-ink: #3b2a17;
+  --panel-parchment-edge: #b79c66;
+
+  /* Slots */
+  --slot-bg: #8b8b8b;
+  --slot-hi: #ffffff;
+  --slot-lo: #373737;
+  --slot-dark-bg: #1b1b20;
+
+  /* Buttons */
+  --btn-bg: #6f6f6f;
+  --btn-bg-hover: #7d86b8;
+  --btn-hi: #a9a9a9;
+  --btn-lo: #3c3c3c;
+  --btn-outline: #000;
+  --btn-text: #e0e0e0;
+  --btn-text-hover: #ffffa0;
+
+  /* Spacing (multiples of a 4px "pixel") */
+  --px: 4px;
+  --gutter: 16px;
+  --hotbar-h: 88px;
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 120ms;
+  --dur: 240ms;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --hotbar-h: 72px;
+  }
+}

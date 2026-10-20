@@ -1,0 +1,76 @@
+/* ---------- Loading terrain screen ---------- */
+.loading {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  /* Darkened dirt: blocky specks over brown, tiled at 32px like a block texture. */
+  background-color: #2b1d12;
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+    conic-gradient(from 90deg at 25% 25%, #5a3d26 0 25%, transparent 0 100%),
+    conic-gradient(from 0deg at 75% 62.5%, #3b2717 0 25%, transparent 0 100%),
+    conic-gradient(from 180deg at 50% 87.5%, #6b4a2e 0 25%, transparent 0 100%),
+    conic-gradient(from 270deg at 87.5% 12.5%, #4a321e 0 25%, transparent 0 100%),
+    linear-gradient(#4f3520, #4f3520);
+  background-size: 100% 100%, 32px 32px, 32px 32px, 32px 32px, 32px 32px, 32px 32px;
+  background-position: 0 0, 0 0, 8px 4px, 20px 12px, 4px 20px, 0 0;
+  image-rendering: pixelated;
+  opacity: 1;
+  transition: opacity var(--loading-fade, 400ms) ease-out;
+}
+.loading.is-out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading__inner {
+  width: min(420px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  color: #fff;
+  font-family: var(--font-ui);
+  text-shadow: var(--text-shadow);
+}
+.loading__title {
+  margin: 0;
+  font-size: 20px;
+}
+.loading__bar {
+  width: 100%;
+  height: 14px;
+  padding: 2px;
+  background: #000;
+  border: 2px solid #fff;
+  box-sizing: border-box;
+}
+.loading__fill {
+  height: 100%;
+  background: #80ff20;
+  box-shadow: inset 0 -3px 0 #3d7a0f;
+}
+.loading__pct {
+  margin: 0;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+.loading__tip {
+  margin: 8px 0 0;
+  min-height: 1.4em;
+  font-size: 14px;
+  color: var(--mc-yellow);
+  animation: loading-tip 300ms ease-out both;
+}
+@keyframes loading-tip {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading__tip { animation: none; }
+}

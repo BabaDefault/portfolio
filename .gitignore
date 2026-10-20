@@ -1,0 +1,9 @@
+node_modules
+dist
+*.local
+
+# full-size Midjourney originals (site uses optimized .webp in src/assets/scenes)
+art-originals/
+
+# tool output
+.playwright-cli/

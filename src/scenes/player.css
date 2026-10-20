@@ -1,0 +1,41 @@
+.player-fig {
+  display: block;
+  overflow: visible;
+  image-rendering: pixelated;
+}
+
+/* breathing: the upper body settles half a pixel-unit into the legs */
+.player-fig__upper {
+  animation: player-breathe 3.6s ease-in-out infinite;
+}
+
+.player-fig__arm {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: player-sway 3.6s ease-in-out infinite;
+}
+.player-fig__arm--back {
+  animation-name: player-sway-back;
+}
+
+@keyframes player-breathe {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(0.5px); }
+}
+
+@keyframes player-sway {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(2deg); }
+}
+
+@keyframes player-sway-back {
+  0%, 100% { transform: rotate(0deg); }
+  50% { transform: rotate(-2deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-fig__upper,
+  .player-fig__arm {
+    animation: none;
+  }
+}
