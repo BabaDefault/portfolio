@@ -65,12 +65,13 @@ export const playerLighting: Partial<Record<ScreenId, PlayerLighting>> = {
     grade: { brightness: 1, contrast: 1.05, saturate: 1 },
   },
   journey: {
-    sun: { dir: [-0.3, 0.6, -0.75], color: '#ffac68', intensity: 5.0 },
-    rim: { dir: [0.7, 0.3, 0.4], color: '#7d9ad8', intensity: 0.5 },
-    hemi: { sky: '#7090d0', ground: '#c0582a', intensity: 0.55 },
-    ambient: 0.05,
+    // soft late-afternoon sky light from the bright left horizon, behind him; cool sky rim; pink bounce off the cherry trees
+    sun: { dir: [-0.75, 0.45, -0.5], color: '#ffe2d0', intensity: 3.2 },
+    rim: { dir: [0.7, 0.5, 0.3], color: '#9fb4ff', intensity: 0.8 },
+    hemi: { sky: '#9db0e8', ground: '#e07a9a', intensity: 0.7 },
+    ambient: 0.06,
     exposure: 1.0,
-    grade: { brightness: 1, contrast: 1.08, saturate: 1.08 },
+    grade: { brightness: 1, contrast: 1.04, saturate: 1.05 },
   },
   advancements: {
     sun: { dir: [0.6, -0.25, 0.6], color: '#30e0e8', intensity: 1.3 },
