@@ -18,7 +18,7 @@
 
 .jr-body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 240px;
+  grid-template-columns: minmax(0, 300px) 240px;
   gap: 16px;
   align-items: start;
 }
@@ -26,7 +26,7 @@
 /* ---------- Map ---------- */
 .jr-map {
   position: relative;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 192 / 300;
   width: 100%;
   min-width: 0;
   background-color: var(--jr-paper);
@@ -231,6 +231,7 @@
   .jr-body {
     grid-template-columns: minmax(0, 1fr);
   }
+  .jr-map { width: min(100%, 300px); margin-inline: auto; }
   .jr-card { min-height: 0; }
 }
 

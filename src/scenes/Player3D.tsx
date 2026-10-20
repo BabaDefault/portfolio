@@ -10,7 +10,7 @@ import './player3d.css';
  * 3D Minecraft player rendered from a standard 64×64 skin (public/skins/player.png).
  * Replace that PNG with any skin to change the look; pick a pose per screen in the registry.
  */
-export type Pose = 'idle' | 'wave' | 'walk' | 'laptop' | 'crossed' | 'think' | 'point' | 'cheer';
+export type Pose = 'idle' | 'wave' | 'walk' | 'laptop' | 'crossed' | 'think' | 'point' | 'cheer' | 'sit';
 
 type Player3DProps = {
   pose?: Pose;
@@ -159,6 +159,14 @@ function applyPose(p: PlayerObject, pose: Pose, t: number) {
       p.position.y = b * 1.2;
       break;
     }
+    case 'sit':
+      // sitting on a ledge: legs out over the edge, hands resting on the block either side
+      s.rightLeg.rotation.set(-1.35, 0, 0.06);
+      s.leftLeg.rotation.set(-1.3, 0, -0.06);
+      s.rightArm.rotation.set(-0.25 + breathe * 0.02, 0, 0.18);
+      s.leftArm.rotation.set(-0.25 + breathe * 0.02, 0, -0.18);
+      p.position.y = -10.5;
+      break;
     case 'idle':
     default:
       break;

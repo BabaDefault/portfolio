@@ -7,24 +7,24 @@ import { bannerIcons, compassRose, redX } from '../icons/journey';
 import { sfx } from '../audio/sfx';
 import './journey.css';
 
-// Map coordinate space (SVG viewBox units). The map keeps this 16:9 aspect ratio.
-const W = 320;
-const H = 180;
+// Map coordinate space (SVG viewBox units). Portrait map; keep in sync with .jr-map aspect-ratio.
+const W = 192;
+const H = 300;
 const CELL = 8; // land/water pixel size
 const DASH = 3; // path dash size
 const DASH_GAP = 9; // distance between dashes
 
 type Pt = { x: number; y: number };
 
-/** Waypoints left → right with a vertical wiggle. */
+/** Waypoints bottom (oldest) → top (latest) with a sideways wiggle. */
 function waypoints(n: number): Pt[] {
   if (n <= 0) return [];
-  if (n === 1) return [{ x: W / 2, y: H * 0.6 }];
-  const left = 40;
-  const right = W - 40;
+  if (n === 1) return [{ x: W / 2, y: H * 0.5 }];
+  const bottom = H - 34;
+  const top = 40;
   return Array.from({ length: n }, (_, i) => {
-    const wiggle = (i % 2 === 0 ? 1 : -1) * 0.1 + Math.sin(i * 2.3) * 0.04;
-    return { x: left + ((right - left) * i) / (n - 1), y: H * (0.58 + wiggle) };
+    const wiggle = (i % 2 === 0 ? -1 : 1) * 0.17 + Math.sin(i * 2.3) * 0.05;
+    return { x: W * (0.5 + wiggle), y: bottom - ((bottom - top) * i) / (n - 1) };
   });
 }
 
@@ -58,15 +58,17 @@ type Cell = 'water' | 'shallow' | 'coast' | 'land' | 'hill';
 function terrain(): Cell[][] {
   const cols = Math.ceil(W / CELL);
   const rows = Math.ceil(H / CELL);
+  // a tall island running bottom to top (grid is 24 × 38 cells)
   const blobs = [
-    { x: 8, y: 13, r: 9 },
-    { x: 18, y: 11, r: 8 },
-    { x: 28, y: 12, r: 9 },
-    { x: 35, y: 9, r: 6 },
-    { x: 14, y: 4, r: 4 },
-    { x: 24, y: 19, r: 5 },
+    { x: 12, y: 33, r: 8 },
+    { x: 10, y: 25, r: 8 },
+    { x: 14, y: 17, r: 8.5 },
+    { x: 11, y: 9, r: 7.5 },
+    { x: 15, y: 3, r: 4.5 },
+    { x: 4, y: 15, r: 3.5 },
+    { x: 20, y: 28, r: 3.5 },
   ];
-  const lake = { x: 21, y: 7, r: 2.4 };
+  const lake = { x: 16, y: 21, r: 2.2 };
   const field = (x: number, y: number) =>
     blobs.reduce((s, b) => s + (b.r * b.r) / ((x - b.x) ** 2 + (y - b.y) ** 2 + 1), 0) -
     (lake.r * lake.r) / ((x - lake.x) ** 2 + (y - lake.y) ** 2 + 0.5) * 1.6;
@@ -181,8 +183,8 @@ export default function JourneyScreen() {
 
   const onMarkerKey = (e: KeyboardEvent<HTMLButtonElement>, i: number) => {
     let next: number | null = null;
-    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = Math.min(last, i + 1);
-    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = Math.max(0, i - 1);
+    if (e.key === 'ArrowUp' || e.key === 'ArrowRight') next = Math.min(last, i + 1);
+    else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') next = Math.max(0, i - 1);
     else if (e.key === 'Home') next = 0;
     else if (e.key === 'End') next = last;
     if (next !== null) {
@@ -198,7 +200,7 @@ export default function JourneyScreen() {
       title="Treasure Map"
       aside={`${count} waypoint${count === 1 ? '' : 's'}`}
       variant="parchment"
-      width={860}
+      width={640}
       className="jr-panel"
       labelledBy="jr-title"
     >
