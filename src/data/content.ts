@@ -7,7 +7,7 @@ import type { IconName } from '../ui/ItemIcon';
 
 export const site = {
   name: 'Jason',
-  title: 'Jason Builds',
+  title: 'Jason Codes',
   subtitle: 'Survival · Hard Mode',
   version: 'v1.0.0',
   footer: 'Built by Jason Tjandra. Not affiliated with Mojang or Microsoft.',
@@ -91,7 +91,7 @@ export const projects: Project[] = [
     thumb: { sky: '#3b1d4f', ground: '#6b2a2a' },
   },
   {
-    id: 'portfolio', name: 'Jason Builds', summary: 'This Minecraft-themed portfolio.',
+    id: 'portfolio', name: 'Jason Codes', summary: 'This Minecraft-themed portfolio.',
     description: 'A game-UI portfolio: hotbar navigation, a 3D player built from my own skin (three.js), animated effects layered on custom backgrounds, and sounds synthesized with the Web Audio API.',
     year: '2026', mode: 'Adventure', tags: ['React', 'TypeScript', 'three.js', 'Vite'],
     thumb: { sky: '#7ec0ee', ground: '#5d9c3a' },

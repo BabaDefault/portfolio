@@ -1,4 +1,4 @@
-# Jason Builds: a Minecraft-themed portfolio
+# Jason Codes: a Minecraft-themed portfolio
 
 A personal portfolio that plays like a Minecraft game UI. Each section is its own
 "world": a cinematic background with animated effects, a 3D player built from my

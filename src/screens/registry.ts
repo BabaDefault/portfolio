@@ -50,7 +50,7 @@ export type ScreenDef = {
 };
 
 export const screens: ScreenDef[] = [
-  { id: 'title', pose: 'wave', label: 'Title Screen', biome: 'ocean', icon: { name: 'hero' }, placement: 'right', player: 'left', layout: { panelInset: '6vw', playerInset: '14vw', playerBottom: '11vh' }, backdrop: { name: 'Sunflower Plains', hudColor: '#ffff55', mood: 'ocean' }, Component: TitleScreen },
+  { id: 'title', pose: 'wave', label: 'Title Screen', biome: 'ocean', icon: { name: 'hero' }, placement: 'center', player: 'right', layout: { playerInset: '9vw', playerBottom: '7vh' }, backdrop: { name: 'Sunflower Plains', hudColor: '#ffff55', mood: 'ocean' }, Component: TitleScreen },
   { id: 'profile', pose: 'laptop', label: 'Player Profile', biome: 'cherry', icon: { name: 'about' }, placement: 'left', player: 'right', layout: { playerInset: '12vw', playerBottom: '13vh' }, backdrop: { name: 'Old Growth Taiga', hudColor: '#ffaa00', mood: 'village' }, Component: ProfileScreen },
   { id: 'skills', pose: 'think', label: 'Brewing — Skills', biome: 'nether', icon: { name: 'skills' }, placement: 'right', player: null, backdrop: { name: 'Nether Fortress', hudColor: '#ff5555', mood: 'nether' }, Component: SkillsScreen },
   { id: 'projects', pose: 'point', label: 'Select World — Projects', biome: 'mineshaft', icon: { name: 'projects' }, placement: 'left', player: null, layout: { panelY: 'bottom' }, backdrop: { name: 'Mineshaft Ravine', hudColor: '#ff55ff', mood: 'mineshaft' }, Component: ProjectsScreen },
