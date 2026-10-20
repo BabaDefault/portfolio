@@ -21,7 +21,7 @@ function waypoints(n: number): Pt[] {
   if (n <= 0) return [];
   if (n === 1) return [{ x: W / 2, y: H * 0.5 }];
   const bottom = H - 34;
-  const top = 40;
+  const top = 58; // room for the top banner above its point
   return Array.from({ length: n }, (_, i) => {
     const wiggle = (i % 2 === 0 ? -1 : 1) * 0.17 + Math.sin(i * 2.3) * 0.05;
     return { x: W * (0.5 + wiggle), y: bottom - ((bottom - top) * i) / (n - 1) };
