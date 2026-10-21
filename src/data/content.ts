@@ -25,7 +25,7 @@ export const splashes: string[] = [
 ];
 
 export const profile = {
-  bio: 'Second-year Computer Science student at UNSW with a strong interest in emerging tech, AI and solving real-world problems. I build full-stack and AI-powered apps, and I keep levelling up by learning new frameworks and shipping products.',
+  bio: 'Hey I\'m Jason, a Second-year student at UNSW doinc Computer Science. I am a passionate person with a strong interest in newly emerging tech/AI and building cool solutions. I enjoy building a variety of applications that are full stack and AI-powered.',
   avatarCaption: 'Jason Tjandra',
   traits: [
     { slot: 'helmet', label: 'Class', value: 'Full-Stack & AI Builder' },
