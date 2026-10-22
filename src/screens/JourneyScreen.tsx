@@ -260,7 +260,10 @@ export default function JourneyScreen() {
               </p>
               <h3 className="jr-card__title">{stop.title}</h3>
               <p className="jr-card__place">{stop.place}</p>
-              <p className="jr-card__desc">{stop.description}</p>
+              {/* keyed so its internal scroll resets to the top on each stop */}
+              <p key={stop.id} className="jr-card__desc">
+                {stop.description}
+              </p>
             </article>
           ) : (
             <p className="jr-card" id="jr-card">

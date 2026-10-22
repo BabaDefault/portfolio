@@ -74,9 +74,10 @@ export const playerLighting: Partial<Record<ScreenId, PlayerLighting>> = {
     grade: { brightness: 1, contrast: 1.04, saturate: 1.05 },
   },
   advancements: {
-    sun: { dir: [0.6, -0.25, 0.6], color: '#30e0e8', intensity: 1.3 },
-    rim: { dir: [0.75, 0.4, -0.55], color: '#a0e8ff', intensity: 2.4 },
-    hemi: { sky: '#26485a', ground: '#082830', intensity: 0.35 },
+    // sculk-cyan fill from below; green/pink aurora light rimming him from the portal ahead
+    sun: { dir: [0.6, -0.25, 0.6], color: '#30e0e8', intensity: 1.1 },
+    rim: { dir: [0.55, 0.55, -0.6], color: '#8affc8', intensity: 2.6 },
+    hemi: { sky: '#5a3a78', ground: '#082830', intensity: 0.45 },
     ambient: 0.03,
     exposure: 0.72,
     grade: { brightness: 0.95, contrast: 1.1, saturate: 0.9 },

@@ -71,6 +71,48 @@
 .player-spot--center { right: 8vw; left: auto; } /* center screens hold a wide panel, so stand aside */
 .player-spot--hidden { opacity: 0; }
 
+/* Speech bubble over the player's head: dark MC chat box with a pixel tail */
+.player-speech {
+  position: absolute;
+  left: 50%;
+  top: 2%;
+  margin: 0;
+  padding: 8px 12px 9px;
+  transform: translate(-50%, -100%);
+  width: max-content;
+  max-width: 260px;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  line-height: 1.3;
+  color: #fff;
+  text-shadow: var(--text-shadow-dark);
+  background: rgba(16, 0, 16, 0.86);
+  border: 2px solid #000;
+  box-shadow:
+    inset 0 0 0 2px #2b0f5e,
+    0 4px 0 rgba(0, 0, 0, 0.35);
+  animation: player-speech-in 420ms var(--ease-out) 450ms both;
+}
+.player-speech::after {
+  content: '';
+  position: absolute;
+  left: calc(50% - 6px);
+  bottom: -10px;
+  width: 12px;
+  height: 8px;
+  background: rgba(16, 0, 16, 0.86);
+  border: 2px solid #000;
+  border-top: 0;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+}
+@keyframes player-speech-in {
+  from { opacity: 0; transform: translate(-50%, calc(-100% + 8px)); }
+  to { opacity: 1; transform: translate(-50%, -100%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .player-speech { animation: none; }
+}
+
 @media (max-width: 900px) {
   .player-spot { display: none; }
 }

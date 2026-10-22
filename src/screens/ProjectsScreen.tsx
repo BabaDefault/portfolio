@@ -6,6 +6,7 @@ import { projects, type Project } from '../data/content';
 import { worldThumb, playArrow } from '../icons/projects';
 import { sfx } from '../audio/sfx';
 import { useNav } from '../nav';
+import { ProjectWorld } from './ProjectWorld';
 import './projects.css';
 
 const modeClass: Record<Project['mode'], string> = {
@@ -47,7 +48,35 @@ export default function ProjectsScreen() {
     el?.scrollIntoView({ block: 'nearest' });
   }, [selected]);
 
+  // "Play Selected World" opens the expanded view; Back returns with the same world selected.
+  const [playing, setPlaying] = useState(false);
+  const play = () => {
+    if (selected < 0) return;
+    sfx.portal();
+    setPlaying(true);
+  };
+  const leave = () => {
+    sfx.click();
+    setPlaying(false);
+  };
+
+  // Coming back from a world: refocus the list on the selected row.
+  const wasPlaying = useRef(false);
+  useEffect(() => {
+    if (!playing && wasPlaying.current) {
+      listRef.current?.focus({ preventScroll: true });
+      if (selected >= 0) document.getElementById(optionId(projects[selected].id))?.scrollIntoView({ block: 'nearest' });
+    }
+    wasPlaying.current = playing;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [playing]);
+
   const onKey = (e: KeyboardEvent<HTMLUListElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      play();
+      return;
+    }
     const last = projects.length - 1;
     let next: number | null = null;
     if (e.key === 'ArrowDown') next = Math.min(last, selected + 1);
@@ -63,6 +92,10 @@ export default function ProjectsScreen() {
   const current = selected >= 0 ? projects[selected] : undefined;
   const count = projects.length;
 
+  if (playing && current) {
+    return <ProjectWorld project={current} modeClass={modeClass[current.mode]} onBack={leave} />;
+  }
+
   return (
     <Panel
       title="Select World"
@@ -72,7 +105,7 @@ export default function ProjectsScreen() {
       labelledBy="pj-title"
     >
       <p className="sr-only" id="pj-hint">
-        Use the up and down arrow keys to choose a world.
+        Use the up and down arrow keys to choose a world, and Enter to open it.
       </p>
       <ul
         ref={listRef}
@@ -95,6 +128,7 @@ export default function ProjectsScreen() {
               select(i);
               listRef.current?.focus({ preventScroll: true });
             }}
+            onDoubleClick={play}
           >
             <span className="pj-thumb">
               <PixelIcon art={worldThumb(p.id, p.thumb.sky, p.thumb.ground)} size={64} />
@@ -114,38 +148,10 @@ export default function ProjectsScreen() {
         ))}
       </ul>
 
-      <div className="pj-detail" aria-live="polite">
-        {current ? (
-          <>
-            <h3 className="pj-detail__title">
-              {current.name} <span className={`pj-mode ${modeClass[current.mode]}`}>{current.mode} Mode</span>
-            </h3>
-            <p className="pj-detail__desc">{current.description}</p>
-            {current.tags.length > 0 && (
-              <ul className="pj-tags" aria-label="Tags">
-                {current.tags.map((t) => (
-                  <li key={t} className="pj-tag">
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </>
-        ) : (
-          <p className="pj-detail__desc mc-dim">Select a world to see its details.</p>
-        )}
-      </div>
-
       <div className="pj-actions">
-        {current?.live ? (
-          <McButton href={current.live} className="pj-actions__play" sound="levelUp">
-            Play Selected World
-          </McButton>
-        ) : (
-          <McButton disabled className="pj-actions__play" sound={null}>
-            Play Selected World
-          </McButton>
-        )}
+        <McButton className="pj-actions__play" sound={null} disabled={!current} onClick={play}>
+          Play Selected World
+        </McButton>
         {current?.repo ? (
           <McButton href={current.repo}>Edit</McButton>
         ) : (

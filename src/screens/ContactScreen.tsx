@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type MouseEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { McButton } from '../ui/McButton';
 import { ItemIcon, type IconName } from '../ui/ItemIcon';
 import { useNav } from '../nav';
@@ -61,6 +62,123 @@ async function copyText(text: string): Promise<boolean> {
   }
 }
 
+/** Phones / small tablets (and iOS in general) render PDFs in frames badly, so show links instead. */
+function canEmbedPdf() {
+  if (typeof window === 'undefined') return false;
+  if (window.matchMedia?.('(max-width: 699px)').matches) return false;
+  return navigator.pdfViewerEnabled !== false;
+}
+
+const FOCUSABLE = 'a[href], button:not([disabled]), object, [tabindex]:not([tabindex="-1"])';
+
+/** Book-framed resume preview. Portalled to <body> so it sits above the HUD/hotbar. */
+function ResumeModal({ onClose }: { onClose: () => void }) {
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const [embed] = useState(canEmbedPdf);
+
+  useEffect(() => {
+    closeRef.current?.focus();
+    // Capture phase so App's global shortcuts (Esc → title, 1–9, ←/→) never see these keys.
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onClose();
+        return;
+      }
+      if (e.key === 'Tab') {
+        // simple focus trap
+        const box = dialogRef.current;
+        const els = Array.from(box?.querySelectorAll<HTMLElement>(FOCUSABLE) ?? []);
+        if (!box || !els.length) return;
+        const first = els[0];
+        const last = els[els.length - 1];
+        const active = document.activeElement;
+        if (e.shiftKey && (active === first || !box.contains(active))) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && (active === last || !box.contains(active))) {
+          e.preventDefault();
+          first.focus();
+        }
+        return;
+      }
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || /^[1-9]$/.test(e.key)) e.preventDefault();
+    };
+    window.addEventListener('keydown', onKey, true);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      window.removeEventListener('keydown', onKey, true);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [onClose]);
+
+  return createPortal(
+    <div className="ct-resume" onClick={onClose}>
+      <div
+        ref={dialogRef}
+        className="ct-resume__book"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="ct-resume-title"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <header className="ct-resume__head">
+          <ItemIcon name="craft-books" size={20} />
+          <h2 id="ct-resume-title" className="ct-resume__title">
+            Resume
+          </h2>
+          <button ref={closeRef} type="button" className="ct-resume__x" onClick={onClose} aria-label="Close resume preview">
+            ✕
+          </button>
+        </header>
+
+        <div className="ct-resume__page">
+          {embed ? (
+            <object className="ct-resume__frame" data={`${contact.resume}#view=FitH`} type="application/pdf" aria-label="Resume (PDF)">
+              <ResumeFallback />
+            </object>
+          ) : (
+            <ResumeFallback />
+          )}
+        </div>
+
+        <footer className="ct-resume__actions">
+          <McButton size="sm" href={contact.resume} download="Jason-Tjandra-Resume.pdf">
+            Download
+          </McButton>
+          <McButton size="sm" href={contact.resume} target="_blank" rel="noreferrer">
+            Open in new tab
+          </McButton>
+          <McButton size="sm" onClick={onClose}>
+            Close
+          </McButton>
+        </footer>
+      </div>
+    </div>,
+    document.body,
+  );
+}
+
+/** Shown on small screens, or inside the <object> when the browser can't embed the PDF. */
+function ResumeFallback() {
+  return (
+    <div className="ct-resume__fallback">
+      <ItemIcon name="craft-books" size={48} />
+      <p>This book can't be opened here. Read it in a new tab or take a copy.</p>
+      <div className="ct-resume__fallback-btns">
+        <McButton href={contact.resume} target="_blank" rel="noreferrer">
+          Open Resume
+        </McButton>
+        <McButton href={contact.resume} download="Jason-Tjandra-Resume.pdf">
+          Download PDF
+        </McButton>
+      </div>
+    </div>
+  );
+}
+
 export default function ContactScreen() {
   const { go } = useNav();
   const reduced = useRef(prefersReducedMotion()).current;
@@ -76,6 +194,8 @@ export default function ContactScreen() {
   const logRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const timers = useRef<number[]>([]);
+  const [resumeOpen, setResumeOpen] = useState(false);
+  const resumeOpener = useRef<HTMLElement | null>(null);
 
   const push = useCallback((...add: Omit<Line, 'id'>[]) => {
     setLines((prev) => [...prev, ...add.map((l) => ({ ...l, id: nextId.current++ }))].slice(-MAX_LINES));
@@ -119,6 +239,18 @@ export default function ContactScreen() {
     kind: 'ok',
     text: link.href.startsWith('mailto:') ? `Opening mail to ${prettyHref(link.href)}…` : `Opening ${prettyHref(link.href)}…`,
   });
+
+  const openResume = () => {
+    resumeOpener.current = document.activeElement as HTMLElement | null;
+    sfx.page();
+    setResumeOpen(true);
+  };
+
+  const closeResume = useCallback(() => {
+    setResumeOpen(false);
+    // hand focus back to whatever opened it (button, command or chat input)
+    window.setTimeout(() => resumeOpener.current?.focus(), 0);
+  }, []);
 
   const copyEmail = async () => {
     sfx.click();
@@ -171,10 +303,16 @@ export default function ContactScreen() {
         push(
           { kind: 'info', text: '--- Showing help ---' },
           ...contact.links.map((l) => ({ kind: 'info' as const, text: `${l.command}  ${l.label}` })),
+          { kind: 'info', text: '/resume  Preview my resume' },
           { kind: 'info', text: '/location  Where I am based' },
           { kind: 'info', text: '/end  Roll the credits' },
           { kind: 'info', text: '/clear  Clear the chat' },
         );
+        return;
+      case '/resume':
+      case '/cv':
+        push({ kind: 'ok', text: 'Opening resume…' });
+        openResume();
         return;
       case '/location':
         sfx.click();
@@ -283,6 +421,22 @@ export default function ContactScreen() {
               </li>
             );
           })}
+          <li className="ct-cmd">
+            <button
+              type="button"
+              className="ct-cmd__link ct-cmd__link--btn"
+              aria-haspopup="dialog"
+              onClick={(e) => {
+                e.stopPropagation();
+                push({ kind: 'cmd', text: '/resume' }, { kind: 'ok', text: 'Opening resume…' });
+                openResume();
+              }}
+            >
+              <ItemIcon name="craft-books" size={16} />
+              <span className="ct-cmd__name">/resume</span>
+              <span className="ct-cmd__label">Preview my resume</span>
+            </button>
+          </li>
         </ul>
 
         <form className="ct__bar" onSubmit={onSubmit}>
@@ -315,8 +469,15 @@ export default function ContactScreen() {
 
       <div className="ct__footer">
         <p className="ct__reply">{contact.replyTime}</p>
-        <McButton onClick={() => go('end')}>To The End</McButton>
+        <div className="ct__footer-btns">
+          <McButton onClick={openResume} sound={null} aria-haspopup="dialog">
+            View Resume
+          </McButton>
+          <McButton onClick={() => go('end')}>To The End</McButton>
+        </div>
       </div>
+
+      {resumeOpen && <ResumeModal onClose={closeResume} />}
     </section>
   );
 }

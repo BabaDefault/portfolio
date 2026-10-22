@@ -5,10 +5,10 @@ export const title: SceneFx = {
   effects: [
     // haze along the horizon
     { type: 'fog', y: 42, height: 12, color: '#ffd9b0', strength: 0.22 },
-    // god rays fanning down-right from the sun
-    { type: 'rays', x: 21.7, y: 31, angle: 38, spread: 55, length: 95, color: 'rgba(255, 228, 170, 0.55)', strength: 0.55 },
-    // the sun breathing
-    { type: 'glow', x: 21.7, y: 31, size: 22, color: '#fff1c4', mode: 'pulse', strength: 0.6 },
+    // god rays fanning down-right from the sun (sun centre measured at 559,450 of 2560x1434)
+    { type: 'rays', x: 21.85, y: 31.4, angle: 38, spread: 55, length: 95, color: 'rgba(255, 228, 170, 0.55)', strength: 0.55 },
+    // the sun breathing: faint, slow, translucent peach halo so it melts into the sun's own bloom
+    { type: 'glow', x: 21.85, y: 31.4, size: 18, color: 'rgba(252, 222, 180, 0.45)', mode: 'pulse', strength: 0.3, period: 10 },
     // sparkle where the sun hits the river
     { type: 'glow', x: 23, y: 82, size: 9, color: '#ffd27a', mode: 'pulse', strength: 0.55 },
     // sunlight glinting along the river, upstream to downstream

@@ -39,7 +39,7 @@ export default function SkillsScreen() {
   return (
     <Panel
       variant="dark"
-      width={540}
+      width={420}
       title="Brewing Stand"
       aside="Skills"
       labelledBy="skills-title"
@@ -60,7 +60,7 @@ export default function SkillsScreen() {
             ))}
           </div>
           <div className="skills-stand__slot" key={`p-${selected}`}>
-            <PixelIcon art={potionArt(skill.level, skill.color)} size={88} title={`Potion of ${skill.name}`} />
+            <PixelIcon art={potionArt(skill.level, skill.color)} size={60} title={`Potion of ${skill.name}`} />
           </div>
         </div>
 
@@ -90,7 +90,7 @@ export default function SkillsScreen() {
               onKeyDown={(e) => onKey(e, i)}
             >
               <span className="slot slot--dark skills-potion__slot">
-                <PixelIcon art={potionArt(s.level, s.color)} size={34} />
+                <PixelIcon art={potionArt(s.level, s.color)} size={28} />
               </span>
               <span className="skills-potion__text">
                 <span className="skills-potion__name">

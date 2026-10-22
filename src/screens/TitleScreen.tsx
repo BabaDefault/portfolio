@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { site, splashes } from '../data/content';
 import { useNav } from '../nav';
 import { McButton } from '../ui/McButton';
@@ -9,6 +9,41 @@ export default function TitleScreen() {
   const { go } = useNav();
   const [splash] = useState(() => splashes[Math.floor(Math.random() * splashes.length)] ?? '');
   const [muted, setMutedState] = useState(isMuted);
+  const logoRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLHeadingElement>(null);
+  const splashRef = useRef<HTMLParagraphElement>(null);
+
+  // Anchor the splash to the top-left of the 'J' (wherever the logo wraps), nudged right/up if it would leave the screen
+  useLayoutEffect(() => {
+    const logo = logoRef.current;
+    const first = textRef.current?.firstChild;
+    if (!logo || !first || !splashRef.current) return;
+    const place = () => {
+      const splashEl = splashRef.current;
+      if (!splashEl) return;
+      const range = document.createRange();
+      range.setStart(first, 0);
+      range.setEnd(first, 1);
+      const j = range.getBoundingClientRect();
+      const base = logo.getBoundingClientRect();
+      const x = j.left - base.left;
+      // .title-splash is centred on the anchor; keep 12px clear of the viewport edge
+      const minX = splashEl.offsetWidth * 0.5 + 12 - base.left;
+      const shift = Math.max(0, minX - x);
+      logo.style.setProperty('--splash-x', `${x + shift}px`);
+      // pushed over the letters: lift by the tilt so it still clears them
+      logo.style.setProperty('--splash-y', `${j.top - base.top - shift * 0.27}px`);
+    };
+    place();
+    const ro = new ResizeObserver(place);
+    ro.observe(logo);
+    window.addEventListener('resize', place);
+    void document.fonts?.ready.then(place);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', place);
+    };
+  }, [splash]);
 
   useEffect(() => {
     const off = onMuteChange(setMutedState);
@@ -29,12 +64,12 @@ export default function TitleScreen() {
 
   return (
     <div className="title-root">
-      <div className="title-logo">
-        <h1 className="title-logo__text" data-text={site.title}>
+      <div className="title-logo" ref={logoRef}>
+        <h1 ref={textRef} className="title-logo__text" data-text={site.title}>
           {site.title}
         </h1>
         {splash && (
-          <p className="title-splash" aria-label={`Splash: ${splash}`}>
+          <p ref={splashRef} className="title-splash" aria-label={`Splash: ${splash}`}>
             <span className="title-splash__inner">{splash}</span>
           </p>
         )}

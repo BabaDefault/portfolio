@@ -13,7 +13,6 @@
   position: relative;
   max-width: 100%;
   margin-bottom: 10px;
-  padding-right: 0.5em;
 }
 
 .title-logo__text {
@@ -64,14 +63,15 @@
 }
 
 /* ---------- Splash ---------- */
-/* Pinned to the top-right corner of the first logo line ("JASON") */
+/* Hangs off the top-left corner of the 'J'; TitleScreen measures the letter into --splash-x/y */
 .title-splash {
   position: absolute;
-  right: 0;
-  top: 0;
+  left: var(--splash-x, 0);
+  top: var(--splash-y, 0);
+  width: max-content;
   margin: 0;
   font-size: clamp(14px, 1.7vw, 22px);
-  transform: translate(45%, -10%);
+  transform: translate(-50%, -70%);
   pointer-events: none;
 }
 .title-splash__inner {
@@ -141,12 +141,6 @@
 }
 
 @media (max-width: 640px) {
-  .title-logo { padding-right: 0; }
-  .title-splash {
-    top: auto;
-    transform: none;
-    bottom: -0.6em;
-  }
   .title-subtitle {
     margin-top: 22px;
     letter-spacing: 0.2em;

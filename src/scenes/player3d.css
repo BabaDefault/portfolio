@@ -16,7 +16,7 @@
 .player3d__shadow {
   position: absolute;
   left: 50%;
-  bottom: 2%;
+  bottom: 9%; /* centred on the soles, which sit ~11% up the canvas */
   width: 46%;
   height: 4%;
   transform: translateX(-50%);

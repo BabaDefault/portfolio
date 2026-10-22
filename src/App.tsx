@@ -26,6 +26,12 @@ export default function App() {
   const [current, setCurrent] = useState<ScreenId>(fromHash);
   const [fadeKey, setFadeKey] = useState(0);
   const [mediaSize, setMediaSize] = useState({ w: 1920, h: 1080 });
+  const [viewport, setViewport] = useState(() => ({ w: window.innerWidth, h: window.innerHeight }));
+  useEffect(() => {
+    const onResize = () => setViewport({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
   const index = screenIndex(current);
   const screen = screens[index];
   const [debugOpen, setDebugOpen] = useState(false);
@@ -106,6 +112,36 @@ export default function App() {
   const mood = media && screen.backdrop ? screen.backdrop.mood : screen.biome;
   const fx = media ? sceneEffects[current] : undefined;
 
+  // Image-anchored player: place the feet on a point of the background image (object-fit: cover).
+  const anchor = media ? screen.anchor : undefined;
+  let anchorStyle: CSSProperties | undefined;
+  let anchorHeight: number | undefined;
+  if (anchor) {
+    const s = Math.max(viewport.w / mediaSize.w, viewport.h / mediaSize.h);
+    const bw = mediaSize.w * s;
+    const bh = mediaSize.h * s;
+    const bl = (viewport.w - bw) / 2;
+    const bt = (viewport.h - bh) / 2;
+    const h = Math.round(anchor.height * bh);
+    const w = Math.round(h * 0.8); // Player3D canvas aspect
+    const feetPx = bt + (anchor.feetY / 100) * bh;
+    const canvasBottom = feetPx + 0.11 * h; // soles sit ~11% up the canvas
+    anchorHeight = h;
+    anchorStyle = {
+      left: bl + (anchor.x / 100) * bw - w / 2,
+      right: 'auto',
+      bottom: viewport.h - canvasBottom,
+      transform: 'none',
+    };
+    if (anchor.clipY !== undefined) {
+      const line = ((bt + (anchor.clipY / 100) * bh - (canvasBottom - h)) / h) * 100;
+      // hard edge, so the body meets the occluding surface instead of fading out above it
+      const mask = `linear-gradient(to bottom, #000 ${(line - 0.4).toFixed(1)}%, transparent ${line.toFixed(1)}%)`;
+      anchorStyle.maskImage = mask;
+      anchorStyle.WebkitMaskImage = mask;
+    }
+  }
+
   return (
     <NavContext.Provider value={nav}>
       <main className="app" style={layoutVars}>
@@ -121,7 +157,10 @@ export default function App() {
         </div>
         <div className="scene-vignette" />
         {/* One persistent 3D player: it turns and changes pose as you switch screens. */}
-        <div className={`player-spot player-spot--${screen.player ?? 'hidden'}`}>
+        <div
+          className={`player-spot player-spot--${screen.player ?? 'hidden'}`}
+          style={anchorStyle ?? (screen.layout?.playerClip ? { maskImage: `linear-gradient(to bottom, #000 ${97 - screen.layout.playerClip}%, transparent ${100 - screen.layout.playerClip}%)`, WebkitMaskImage: `linear-gradient(to bottom, #000 ${97 - screen.layout.playerClip}%, transparent ${100 - screen.layout.playerClip}%)` } : undefined)}
+        >
           <Player3D
             pose={screen.pose}
             lighting={playerLighting[current] ?? defaultLighting}
@@ -130,8 +169,14 @@ export default function App() {
                 ? screen.player === 'left' ? 'awayRight' : 'awayLeft'
                 : screen.player === 'right' ? 'left' : screen.player === 'left' ? 'right' : 'front'
             }
-            height={380}
+            height={anchorHeight ?? screen.layout?.playerHeight ?? 380}
+            trackCursor={!screen.faceViewer}
           />
+          {screen.speech && (
+            <p className="player-speech" key={`speech-${current}`}>
+              {screen.speech}
+            </p>
+          )}
         </div>
         <div
           className={`screen-layer screen-enter place-${screen.placement} panel-y-${screen.layout?.panelY ?? 'center'} ${screen.scrim && media ? 'has-scrim' : ''}`}

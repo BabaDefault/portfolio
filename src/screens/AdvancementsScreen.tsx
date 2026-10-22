@@ -21,11 +21,12 @@ const advIcons: Record<Advancement['icon'], IconName> = {
 };
 
 // Tree geometry (px)
-const NODE = 52;
-const COL = 96;
-const ROW = 72;
-const PAD = 28;
-const TIP_W = 236;
+const NODE = 44;
+const COL = 82;
+const ROW = 62;
+const PAD = 24;
+const TIP_W = 208;
+const TIP_BAR = 24; // tooltip title bar height (matches .adv-tip__bar min-height)
 
 type Placed = Advancement & { depth: number; row: number; x: number; y: number; cx: number; cy: number };
 type Seg = { key: string; left: number; top: number; width: number; height: number; lit: boolean };
@@ -107,14 +108,14 @@ export default function AdvancementsScreen() {
     <Panel
       title="Advancements"
       aside={`${unlocked}/${advancements.length} unlocked`}
-      width={560}
+      width={480}
       className="adv-panel"
       labelledBy="adv-title"
     >
       <div className="adv-window">
         <div className="adv-tabs" role="tablist" aria-label="Advancement categories">
           <button type="button" role="tab" aria-selected="true" className="adv-tab adv-tab--active" title="Story">
-            <ItemIcon name={advIcons.grass} size={20} />
+            <ItemIcon name={advIcons.grass} size={16} />
             <span className="adv-tab__label">Story</span>
           </button>
           <button
@@ -126,7 +127,7 @@ export default function AdvancementsScreen() {
             title="Nether (coming soon)"
             onClick={() => sfx.deny()}
           >
-            <PixelIcon art={netherrackTab} size={20} title="Nether (coming soon)" />
+            <PixelIcon art={netherrackTab} size={16} title="Nether (coming soon)" />
           </button>
           <button
             type="button"
@@ -137,7 +138,7 @@ export default function AdvancementsScreen() {
             title="The End (coming soon)"
             onClick={() => sfx.deny()}
           >
-            <PixelIcon art={endStoneTab} size={20} title="The End (coming soon)" />
+            <PixelIcon art={endStoneTab} size={16} title="The End (coming soon)" />
           </button>
         </div>
 
@@ -179,7 +180,7 @@ export default function AdvancementsScreen() {
                         onClick={() => onNodeClick(n)}
                       >
                         <PixelIcon art={frameArt(frame, n.unlocked)} size={NODE} className="adv-node__frame" />
-                        <ItemIcon name={advIcons[n.icon]} size={28} className="adv-node__icon" />
+                        <ItemIcon name={advIcons[n.icon]} size={24} className="adv-node__icon" />
                       </button>
                     </li>
                   );
@@ -207,7 +208,7 @@ function AdvTooltip({ node, canvasW, canvasH }: { node: Placed; canvasW: number;
   const tone = !node.unlocked ? 'locked' : frame === 'challenge' ? 'challenge' : 'unlocked';
   const style: CSSProperties = {
     width: TIP_W,
-    top: node.y + (NODE - 28) / 2,
+    top: node.y + (NODE - TIP_BAR) / 2,
     ...(flip ? { left: node.x + NODE - TIP_W } : { left: node.x }),
   };
   return (

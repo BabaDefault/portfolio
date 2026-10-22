@@ -18,16 +18,14 @@ const SKIN_D = '#a26c4b';
 const EYE = '#2b2230';
 const WHITE = '#f4f1ec';
 const MOUTH = '#99583f';
-const H = '#30323a'; // charcoal hoodie
-const H_L = '#41444e';
-const H_S = '#25272d';
-const H_D = '#1a1b20';
-const EM = '#2fc477'; // emerald accent
-const EM_D = '#209457';
-const J = '#2b4170'; // jeans
-const J_L = '#38558f';
-const J_S = '#213459';
-const J_D = '#18264a';
+const H = '#ecebe7'; // plain white long-sleeve shirt
+const H_L = '#fbfaf7';
+const H_S = '#d3d1cc';
+const H_D = '#b4b2ad';
+const J = '#1d1d22'; // black pants
+const J_L = '#2b2b31';
+const J_S = '#16161a';
+const J_D = '#0e0e11';
 const SHOE = '#f2f2f2';
 const SHOE_S = '#cfcfd2';
 const SOLE = '#9b9ba0';
@@ -70,27 +68,15 @@ const BODY: Px[] = [
   [8, 18, 2, 20, H_L],
   [20, 16, 4, 24, H_S],
   [23, 16, 1, 24, H_D],
-  // hood rim and neckline
-  [8, 16, 16, 2, H_L],
-  [12, 16, 8, 2, H_D],
-  [13, 18, 6, 1, H_D],
-  [20, 16, 4, 2, H],
-  // emerald drawstrings with aglets
-  [13, 18, 1, 7, EM],
-  [17, 18, 1, 6, EM_D],
-  [13, 25, 1, 1, '#d9dadc'],
-  [17, 24, 1, 1, '#b5b6ba'],
-  // emerald chest stripe
-  [8, 27, 12, 1, EM],
-  [20, 27, 4, 1, EM_D],
-  // kangaroo pocket
-  [11, 31, 10, 1, H_S],
-  [11, 31, 1, 6, H_S],
-  [20, 31, 1, 6, H_S],
-  [12, 32, 8, 1, H_L],
-  // waistband
-  [8, 38, 16, 2, H_D],
-  [8, 38, 2, 2, H_S],
+  // crew neckline
+  [12, 16, 8, 1, SKIN_S],
+  [11, 17, 10, 1, H_S],
+  // soft fabric folds
+  [12, 24, 1, 3, H_S],
+  [17, 29, 1, 4, H_S],
+  // hem
+  [8, 38, 16, 2, H_S],
+  [20, 38, 4, 2, H_D],
 ];
 
 const ARM_FRONT: Px[] = [
@@ -98,7 +84,6 @@ const ARM_FRONT: Px[] = [
   [0, 16, 8, 1, H_L],
   [0, 17, 2, 16, H_L],
   [7, 16, 1, 19, H_D],
-  [3, 16, 1, 17, EM],
   [0, 33, 8, 2, H_D],
   [0, 35, 8, 5, SKIN],
   [0, 35, 8, 1, SKIN_S],
@@ -111,8 +96,7 @@ const ARM_BACK: Px[] = [
   [24, 16, 8, 1, H],
   [24, 16, 1, 19, H_D],
   [30, 16, 2, 19, H_D],
-  [28, 16, 1, 17, EM_D],
-  [24, 33, 8, 2, '#141518'],
+  [24, 33, 8, 2, H_D],
   [24, 35, 8, 5, SKIN_S],
   [24, 35, 8, 1, SKIN_D],
   [30, 35, 2, 5, SKIN_D],
@@ -124,17 +108,12 @@ const LEGS: Px[] = [
   [16, 38, 8, 20, J_S],
   [22, 38, 2, 20, J_D],
   [15, 40, 1, 16, J_D],
-  [11, 46, 2, 1, J_L], // knee highlight
-  [8, 56, 8, 2, J_L], // rolled cuffs
-  [16, 56, 8, 2, J],
   // sneakers
   [8, 58, 8, 6, SHOE],
   [16, 58, 8, 6, SHOE_S],
   [22, 58, 2, 5, '#b0b0b4'],
   [10, 59, 3, 1, '#c9c9cc'],
   [18, 59, 3, 1, '#a9a9ad'],
-  [10, 61, 4, 1, EM],
-  [18, 61, 3, 1, EM_D],
   [8, 63, 8, 1, SOLE],
   [16, 63, 8, 1, '#7d7d82'],
 ];

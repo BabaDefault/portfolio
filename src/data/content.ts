@@ -68,7 +68,17 @@ export type Project = {
   thumb: { sky: string; ground: string }; // colors for the code-drawn world thumbnail
   live?: string;
   repo?: string;
+  /** Optional bullet points shown in the expanded world view. */
+  highlights?: string[];
+  /**
+   * Optional captions / alt text / order for screenshots. Screenshots are picked up
+   * automatically from src/assets/projects/<id>/ (see src/screens/projectImages.ts),
+   * so this is only needed to caption them: `src` is the file name in that folder.
+   */
+  images?: ProjectImage[];
 };
+
+export type ProjectImage = { src: string; alt: string; caption?: string };
 
 // [CHECK] add live/repo links where they exist; buttons stay disabled while a link is missing.
 export const projects: Project[] = [
@@ -174,6 +184,7 @@ export const contact = {
     { command: '/github', label: 'github.com/your-handle', href: 'https://github.com/BabaDefault' },
   ],
   replyTime: 'I usually reply within a day or two :D',
+  resume: `${import.meta.env.BASE_URL}resume/Jason-Tjandra-Resume.pdf`, // file lives in public/resume/
 };
 
 export const credits = {

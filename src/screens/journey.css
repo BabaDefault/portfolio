@@ -6,6 +6,7 @@
   --jr-paper: #efe2bd;
   --jr-paper-dark: #dcc894;
   --jr-red: #c8261b;
+  --jr-map-w: 290px;
   min-width: 0;
 }
 .jr-panel .panel__title {
@@ -18,7 +19,7 @@
 
 .jr-body {
   display: grid;
-  grid-template-columns: minmax(0, 290px) minmax(0, 1fr); /* map + details card */
+  grid-template-columns: minmax(0, var(--jr-map-w)) minmax(0, 1fr); /* map + details card */
   gap: 16px;
   align-items: start;
 }
@@ -163,14 +164,24 @@
   75% { transform: rotate(-3deg); }
 }
 
-/* ---------- Details card ---------- */
+/* ---------- Details card ----------
+   The side column stretches to the map's height and the card fills what's left above
+   the Prev/Next row, so the buttons sit at the same spot for every stop. Long text
+   scrolls inside the card instead of growing it. */
 .jr-side {
   display: flex;
   flex-direction: column;
   gap: 12px;
   min-width: 0;
+  align-self: stretch;
 }
 .jr-card {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  height: 0; /* size comes from the map row, never from the text */
+  min-height: 0;
+  overflow: hidden;
   margin: 0;
   padding: 12px 14px 14px;
   background: var(--jr-paper);
@@ -179,8 +190,8 @@
     inset 0 0 0 2px var(--jr-paper-dark),
     4px 4px 0 rgba(59, 42, 23, 0.25);
   color: var(--jr-ink);
-  min-height: 160px;
 }
+.jr-card > * { flex: none; }
 .jr-card__period {
   margin: 0 0 6px;
   font-family: var(--font-display);
@@ -206,10 +217,22 @@
   content: '⌖ ';
 }
 .jr-card__desc {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow-y: auto;
   margin: 0;
+  padding-right: 4px;
   font-family: var(--font-ui);
   font-size: 14px;
   line-height: 1.45;
+  scrollbar-width: thin;
+  scrollbar-color: var(--jr-ink-soft) var(--jr-paper-dark);
+}
+.jr-card__desc::-webkit-scrollbar { width: 8px; }
+.jr-card__desc::-webkit-scrollbar-track { background: var(--jr-paper-dark); }
+.jr-card__desc::-webkit-scrollbar-thumb {
+  background: var(--jr-ink-soft);
+  box-shadow: inset -2px -2px 0 var(--jr-ink), inset 2px 2px 0 #9a7347;
 }
 
 .jr-steps {
@@ -227,12 +250,23 @@
 }
 
 /* ---------- Responsive ---------- */
+/* Short laptop viewports: shrink the map (and so the card row) by height so the whole
+   panel fits between the HUD and the hotbar. 290px ≈ layer padding (72 + 136) + panel
+   padding (40) + header (~32); 0.64 = map aspect 192 / 300. */
+@media (min-width: 900px) and (max-height: 860px) {
+  .jr-panel {
+    --jr-map-w: clamp(200px, calc((100vh - 290px) * 0.64), 290px);
+    --jr-map-w: clamp(200px, calc((100dvh - 290px) * 0.64), 290px);
+  }
+}
+
 @media (max-width: 760px) {
   .jr-body {
     grid-template-columns: minmax(0, 1fr);
   }
   .jr-map { width: min(100%, 290px); margin-inline: auto; }
-  .jr-card { min-height: 0; }
+  /* stacked: no map beside the card, so it gets its own fixed height */
+  .jr-card { flex: none; height: 260px; }
 }
 
 @media (max-width: 520px) {

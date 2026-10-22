@@ -10,7 +10,7 @@ import './player3d.css';
  * 3D Minecraft player rendered from a standard 64×64 skin (public/skins/player.png).
  * Replace that PNG with any skin to change the look; pick a pose per screen in the registry.
  */
-export type Pose = 'idle' | 'wave' | 'walk' | 'laptop' | 'crossed' | 'think' | 'point' | 'cheer' | 'sit' | 'peek';
+export type Pose = 'idle' | 'wave' | 'walk' | 'laptop' | 'crossed' | 'think' | 'point' | 'cheer' | 'sit' | 'peek' | 'lantern' | 'read';
 
 type Player3DProps = {
   pose?: Pose;
@@ -20,6 +20,8 @@ type Player3DProps = {
   lighting?: PlayerLighting;
   height?: number; // px
   lookAtCursor?: boolean;
+  /** false: ignore the cursor and look straight at the viewer (can change without remounting). */
+  trackCursor?: boolean;
   className?: string;
 };
 
@@ -110,9 +112,9 @@ function webglAvailable() {
 function applyPose(p: PlayerObject, pose: Pose, t: number) {
   const s = p.skin;
   const breathe = Math.sin(t * 1.6);
-  // neutral base
-  s.rightArm.rotation.set(Math.sin(t * 0.9) * 0.04, 0, 0.07 + breathe * 0.03);
-  s.leftArm.rotation.set(-Math.sin(t * 0.9) * 0.04, 0, -0.07 - breathe * 0.03);
+  // neutral base (skinview3d: +z swings the left arm outward, -z the right)
+  s.rightArm.rotation.set(Math.sin(t * 0.9) * 0.04, 0, -0.07 - breathe * 0.03);
+  s.leftArm.rotation.set(-Math.sin(t * 0.9) * 0.04, 0, 0.07 + breathe * 0.03);
   s.rightLeg.rotation.set(0, 0, 0);
   s.leftLeg.rotation.set(0, 0, 0);
   s.body.rotation.set(0, 0, 0);
@@ -120,11 +122,13 @@ function applyPose(p: PlayerObject, pose: Pose, t: number) {
 
   switch (pose) {
     case 'wave': {
-      // wave for ~1.6s out of every 4.5s
-      const cycle = t % 4.5;
-      if (cycle < 1.6) {
-        const lift = Math.min(1, cycle / 0.25, (1.6 - cycle) / 0.25);
-        s.leftArm.rotation.z = -0.07 + lift * (-2.55 + Math.sin(t * 12) * 0.3);
+      // hand raised beside the head, waving side to side for ~2.6s of every 4s; the other arm hangs relaxed
+      s.rightArm.rotation.set(-0.12 + breathe * 0.02, 0, -0.14);
+      const cycle = t % 4;
+      if (cycle < 2.6) {
+        const lift = Math.min(1, cycle / 0.3, (2.6 - cycle) / 0.3);
+        s.leftArm.rotation.x = lift * -0.25;
+        s.leftArm.rotation.z = 0.07 + lift * (2.45 + Math.sin(t * 9) * 0.35);
       }
       break;
     }
@@ -137,10 +141,16 @@ function applyPose(p: PlayerObject, pose: Pose, t: number) {
       p.position.y = Math.abs(Math.cos(t * 5)) * 0.4;
       break;
     }
-    case 'laptop':
-      s.rightArm.rotation.set(-0.85 + breathe * 0.02, 0, 0.5);
-      s.leftArm.rotation.set(-0.85 + breathe * 0.02, 0, -0.5);
+    case 'laptop': {
+      // sitting on a log with the laptop on the lap, typing; legs angled down off the front
+      const tap = (k: number) => Math.max(0, Math.sin(t * 11 + k)) * 0.05;
+      s.rightLeg.rotation.set(-1.2, 0, 0.08);
+      s.leftLeg.rotation.set(-1.25, 0, -0.08);
+      s.rightArm.rotation.set(-1.0 + tap(0), 0, 0.22);
+      s.leftArm.rotation.set(-1.0 + tap(2.1), 0, -0.22);
+      p.position.y = -10.5;
       break;
+    }
     case 'crossed':
       s.rightArm.rotation.set(-1.05 + breathe * 0.02, 0, 0.85);
       s.leftArm.rotation.set(-0.95 + breathe * 0.02, 0, -0.85);
@@ -154,17 +164,20 @@ function applyPose(p: PlayerObject, pose: Pose, t: number) {
       break;
     case 'cheer': {
       const b = Math.abs(Math.sin(t * 4));
-      s.rightArm.rotation.set(0, 0, 2.6 + b * 0.25);
-      s.leftArm.rotation.set(0, 0, -2.6 - b * 0.25);
-      p.position.y = b * 1.2;
+      // jumping jacks: arms up in a V and legs kicked out at the top of each hop
+      s.rightArm.rotation.set(0, 0, -2.05 - b * 0.3);
+      s.leftArm.rotation.set(0, 0, 2.05 + b * 0.3);
+      s.rightLeg.rotation.z = -b * 0.28;
+      s.leftLeg.rotation.z = b * 0.28;
+      p.position.y = b * 3;
       break;
     }
     case 'sit':
       // sitting on a flat block: legs stretched out in front, hands resting either side
       s.rightLeg.rotation.set(-1.52, 0, 0.05);
       s.leftLeg.rotation.set(-1.48, 0, -0.05);
-      s.rightArm.rotation.set(-0.25 + breathe * 0.02, 0, 0.18);
-      s.leftArm.rotation.set(-0.25 + breathe * 0.02, 0, -0.18);
+      s.rightArm.rotation.set(-0.25 + breathe * 0.02, 0, -0.18);
+      s.leftArm.rotation.set(-0.25 + breathe * 0.02, 0, 0.18);
       p.position.y = -10.5;
       break;
     case 'peek':
@@ -172,6 +185,17 @@ function applyPose(p: PlayerObject, pose: Pose, t: number) {
       s.rightArm.rotation.set(-0.6 + Math.sin(t * 1.3) * 0.05, 0, 0.12);
       s.leftArm.rotation.set(-0.75 + Math.sin(t * 1.3 + 1.2) * 0.05, 0, -0.12);
       break;
+    case 'lantern':
+      // lantern raised out in front to light the way, arm a little out from the body
+      s.rightArm.rotation.set(-1.9 + Math.sin(t * 1.1) * 0.03, 0, -0.22);
+      break;
+    case 'read': {
+      // holding an open recipe book at chest height, flipping a page now and then
+      const flip = Math.max(0, Math.sin(t * 0.8)) ** 8 * 0.35;
+      s.rightArm.rotation.set(-1.05 + breathe * 0.02 - flip, 0, 0.32);
+      s.leftArm.rotation.set(-1.05 + breathe * 0.02, 0, -0.32);
+      break;
+    }
     case 'idle':
     default:
       break;
@@ -184,6 +208,7 @@ export function Player3D({
   lighting = defaultLighting,
   height = 360,
   lookAtCursor = true,
+  trackCursor = true,
   className = '',
 }: Player3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -192,12 +217,14 @@ export function Player3D({
   const poseRef = useRef(pose);
   const facingRef = useRef(facing);
   const lightingRef = useRef(lighting);
+  const trackRef = useRef(trackCursor);
   const [failed, setFailed] = useState(() => !webglAvailable());
   const width = Math.round(height * 0.8);
 
   poseRef.current = pose;
   facingRef.current = facing;
   lightingRef.current = lighting;
+  trackRef.current = trackCursor;
 
   // Create the viewer once.
   useEffect(() => {
@@ -291,19 +318,89 @@ export function Player3D({
     viewer.controls.enabled = false;
     viewer.playerWrapper.position.y = 0.5;
 
-    // Laptop prop, held against the chest
+    // Laptop prop: a black ThinkPad open on the lap (body space; the lap sits at y≈-4 when seated)
+    const tpBlack = new THREE.MeshStandardMaterial({ color: '#0e0e10', roughness: 0.6 });
+    const tpKeys = new THREE.MeshStandardMaterial({ color: '#0d0d0f', roughness: 0.9 });
+    const tpRed = new THREE.MeshStandardMaterial({ color: '#e3262b', emissive: '#7a0d10', roughness: 0.5 });
+    const box = (w: number, h: number, d: number, mat: THREE.Material, x: number, y: number, z: number) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+      m.position.set(x, y, z);
+      return m;
+    };
     const laptop = new THREE.Group();
-    const shell = new THREE.Mesh(new THREE.BoxGeometry(7, 9, 0.9), new THREE.MeshStandardMaterial({ color: '#4a4e57', roughness: 0.6 }));
-    const edge = new THREE.Mesh(new THREE.BoxGeometry(7.2, 0.6, 1), new THREE.MeshStandardMaterial({ color: '#7a7f8a', roughness: 0.5 }));
-    edge.position.y = 4.5;
-    const logo = new THREE.Mesh(new THREE.BoxGeometry(1.2, 1.2, 0.1), new THREE.MeshStandardMaterial({ color: '#2fc477', emissive: '#1a7a48' }));
-    logo.position.set(0, 0.5, 0.5);
-    laptop.add(shell, edge, logo);
-    laptop.position.set(0, -1.2, 3.4);
-    laptop.rotation.x = -0.12;
+    laptop.add(
+      box(10, 0.6, 7, tpBlack, 0, 0, 0), // base
+      box(9, 0.1, 3.4, tpKeys, 0, 0.33, 0.9), // keyboard
+      box(0.35, 0.2, 0.35, tpRed, 0, 0.4, 0.9), // TrackPoint
+      box(3.4, 0.1, 1.7, tpKeys, 0, 0.33, -2), // touchpad
+    );
+    // lid hinged at the far edge, tipped slightly back
+    const lid = new THREE.Group();
+    lid.position.set(0, 0.3, 3.5);
+    lid.rotation.x = 0.28;
+    lid.add(
+      box(10, 7, 0.4, tpBlack, 0, 3.5, 0.2),
+      box(9, 6, 0.05, new THREE.MeshStandardMaterial({ color: '#1d2b44', emissive: '#4f7fc4', emissiveIntensity: 0.6 }), 0, 3.6, -0.03), // display
+      box(2.6, 0.45, 0.05, new THREE.MeshStandardMaterial({ color: '#b9bcc2', roughness: 0.4 }), 2.9, 1.2, 0.43), // "ThinkPad" badge
+      box(0.5, 0.5, 0.06, tpRed, 4.55, 1.55, 0.43), // the red dot over the i
+    );
+    laptop.add(lid);
+    laptop.position.set(0, -3.6, 6.5);
     laptop.visible = false;
     viewer.playerObject.skin.body.add(laptop);
     laptopRef.current = laptop;
+
+    // Recipe book prop: open, held in both hands at chest height
+    const cover = new THREE.MeshStandardMaterial({ color: '#5a2f1a', roughness: 0.8 });
+    const paper = new THREE.MeshStandardMaterial({ color: '#efe3c2', roughness: 0.9 });
+    const ink = new THREE.MeshStandardMaterial({ color: '#7a3b2a', roughness: 0.9 });
+    const book = new THREE.Group();
+    const half = (side: 1 | -1) => {
+      const g = new THREE.Group();
+      g.add(box(4.2, 0.4, 5.6, cover, side * 2.1, 0, 0), box(3.8, 0.35, 5.1, paper, side * 2.0, 0.35, 0));
+      for (const z of [-1.6, -0.6, 0.4, 1.4]) g.add(box(2.4, 0.05, 0.35, ink, side * 2.0, 0.55, z)); // recipe lines
+      g.rotation.z = side * -0.18; // pages open in a shallow V
+      return g;
+    };
+    book.add(half(1), half(-1));
+    book.position.set(0, -0.6, 8.2);
+    book.rotation.x = 1.05; // tilted up toward the reader
+    book.visible = false;
+    viewer.playerObject.skin.body.add(book);
+
+    // Lantern prop: hangs from the right hand (arm space: the hand ends at y≈-10), lit from inside
+    const iron = new THREE.MeshStandardMaterial({ color: '#2a2b30', roughness: 0.55, metalness: 0.6 });
+    const lantern = new THREE.Group();
+    const lanternBody = new THREE.Group();
+    lanternBody.add(
+      box(4.4, 0.9, 4.4, iron, 0, 0, 0), // cap
+      box(2.6, 0.6, 2.6, iron, 0, 0.7, 0), // cap knob
+      box(1.6, 1.6, 0.4, iron, 0, 1.8, 0), // handle loop
+      box(3.6, 3.4, 3.6, new THREE.MeshStandardMaterial({ color: '#c46a1c', emissive: '#ff8a1e', emissiveIntensity: 1.25 }), 0, -2.15, 0), // flame glass
+      box(4.4, 0.9, 4.4, iron, 0, -4.3, 0), // base
+    );
+    for (const [x, z] of [[-1.9, -1.9], [1.9, -1.9], [-1.9, 1.9], [1.9, 1.9]]) lanternBody.add(box(0.6, 3.4, 0.6, iron, x, -2.15, z)); // corner bars
+    lanternBody.position.y = -2.4; // hang below the grip
+    const glowCanvas = document.createElement('canvas');
+    glowCanvas.width = glowCanvas.height = 64;
+    const gctx = glowCanvas.getContext('2d')!;
+    const grad = gctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grad.addColorStop(0, 'rgba(255, 190, 90, 1)');
+    grad.addColorStop(0.3, 'rgba(255, 150, 50, 0.55)');
+    grad.addColorStop(1, 'rgba(255, 140, 40, 0)');
+    gctx.fillStyle = grad;
+    gctx.fillRect(0, 0, 64, 64);
+    const halo = new THREE.Sprite(
+      new THREE.SpriteMaterial({ map: new THREE.CanvasTexture(glowCanvas), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true }),
+    );
+    halo.scale.set(18, 18, 1);
+    halo.position.y = -4.5;
+    const lanternLight = new THREE.PointLight('#ffb35c', 90, 60, 2);
+    lanternLight.position.y = -4.5;
+    lantern.add(lanternBody, halo, lanternLight);
+    lantern.position.set(0, -10.2, 0);
+    lantern.visible = false;
+    viewer.playerObject.skin.rightArm.add(lantern);
 
     // Head follows the cursor
     const target = { x: 0, y: 0 };
@@ -324,23 +421,46 @@ export function Player3D({
       const currentPose = poseRef.current;
       applyPose(player, currentPose, t);
       laptop.visible = currentPose === 'laptop';
+      lantern.visible = currentPose === 'lantern';
+      book.visible = currentPose === 'read';
+      if (lantern.visible) {
+        // keep it hanging straight down whatever the arm does, with a lazy swing and flicker
+        const arm = player.skin.rightArm.rotation;
+        lantern.rotation.set(-arm.x + Math.sin(t * 1.4) * 0.07, 0, -arm.z + Math.sin(t * 1.1 + 0.6) * 0.05);
+        lanternLight.intensity = 90 * (0.9 + Math.sin(t * 13) * 0.05 + Math.sin(t * 7.7) * 0.05);
+      }
       // ease body turn + head look
       // peeking: turn a bit further toward what's in front of you
-      const fy = FACING_Y[facingRef.current] * (currentPose === 'peek' ? 1.7 : 1);
+      // laptop: sit nearly square to the camera, just angled toward the fire
+      const fy = FACING_Y[facingRef.current] * (currentPose === 'peek' ? 1.7 : currentPose === 'laptop' ? 0.35 : 1);
       player.rotation.y += (fy - player.rotation.y) * 0.08;
-      look.x += (target.x - look.x) * 0.1;
-      look.y += (target.y - look.y) * 0.1;
-      const down = currentPose === 'laptop' ? 0.25 : 0;
-      if (currentPose === 'peek') {
+      const track = trackRef.current;
+      look.x += ((track ? target.x : 0) - look.x) * 0.1;
+      look.y += ((track ? target.y : 0) - look.y) * 0.1;
+      const down = currentPose === 'laptop' ? 0.45 : 0;
+      if (currentPose === 'laptop') {
+        // eyes on the screen, no cursor tracking
+        player.skin.head.rotation.y = Math.sin(t * 0.5) * 0.05;
+        player.skin.head.rotation.x = 0.42 + Math.sin(t * 0.7) * 0.03;
+      } else if (currentPose === 'peek') {
         // eyes down into the chest, no cursor tracking
         player.skin.head.rotation.y = Math.sin(t * 0.6) * 0.12;
         player.skin.head.rotation.x = 0.7 + Math.sin(t * 0.4) * 0.04;
+      } else if (currentPose === 'read') {
+        // eyes on the recipe, reading across the page
+        player.skin.head.rotation.y = Math.sin(t * 0.9) * 0.1;
+        player.skin.head.rotation.x = 0.5 + Math.sin(t * 0.45) * 0.03;
+      } else if (currentPose === 'lantern') {
+        // chin up toward something far away, scanning slowly
+        player.skin.head.rotation.y = Math.sin(t * 0.3) * 0.12;
+        player.skin.head.rotation.x = -0.12;
       } else if (facingRef.current.startsWith('away')) {
         // gazing out over the scene: no cursor tracking, head tilted slightly down
         player.skin.head.rotation.y = Math.sin(t * 0.25) * 0.15;
         player.skin.head.rotation.x = 0.15;
       } else {
-        player.skin.head.rotation.y = look.x * 0.7 - fy * 0.4;
+        // not tracking: body stays angled, head turns to meet the viewer
+        player.skin.head.rotation.y = trackRef.current ? look.x * 0.7 - fy * 0.4 : -fy * 0.85;
         player.skin.head.rotation.x = look.y * 0.35 + down;
       }
     });

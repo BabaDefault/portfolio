@@ -186,6 +186,143 @@
   background: rgba(0, 0, 0, 0.35);
 }
 
+/* Footer buttons */
+.ct__footer-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* /resume row is a <button>, reset it to look like the link rows */
+.ct-cmd__link--btn {
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+}
+
+/* ---------- Resume preview (book-and-quill modal, portalled to <body>) ---------- */
+.ct-resume {
+  position: fixed;
+  inset: 0;
+  z-index: 60; /* above HUD/hotbar (10) and tooltips (50), below the loading screen (100) */
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(5, 2, 12, 0.72);
+  animation: ct-fade-in 160ms ease-out both;
+}
+
+.ct-resume__book {
+  width: min(880px, 100%);
+  height: min(100%, 960px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px 12px 12px;
+  background: #6b4423; /* leather cover */
+  border: 2px solid #000;
+  box-shadow:
+    inset 0 0 0 2px #8b5a2b,
+    inset 0 0 0 4px #3d2410,
+    0 8px 0 rgba(0, 0, 0, 0.45);
+  animation: ct-book-in 200ms var(--ease-out) both;
+}
+
+.ct-resume__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 2px;
+}
+.ct-resume__title {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #fff;
+  text-shadow: var(--text-shadow);
+}
+.ct-resume__x {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  color: #e0e0e0;
+  background: rgba(0, 0, 0, 0.35);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 2px #4a2c12;
+  cursor: pointer;
+}
+.ct-resume__x:hover,
+.ct-resume__x:focus-visible { color: var(--btn-text-hover); box-shadow: inset 0 0 0 2px #fff; outline: none; }
+
+.ct-resume__page {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  background: var(--panel-parchment-bg);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 3px var(--panel-parchment-edge);
+  padding: 3px;
+}
+.ct-resume__frame {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #fff;
+}
+.ct-resume__frame:focus-visible { outline: 2px solid #fff; outline-offset: -2px; }
+
+.ct-resume__fallback {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px 16px;
+  text-align: center;
+  color: var(--panel-parchment-ink);
+  background: var(--panel-parchment-bg);
+}
+.ct-resume__fallback p { margin: 0; max-width: 32ch; font-size: 16px; line-height: 1.35; }
+.ct-resume__fallback-btns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ct-resume__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+@keyframes ct-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes ct-book-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 699px) {
+  .ct-resume { padding: 10px; }
+  .ct-resume__book { height: auto; max-height: 100%; }
+  .ct-resume__page { flex: none; }
+  .ct-resume__actions { justify-content: center; }
+}
+
 @media (max-width: 480px) {
   .ct-line { font-size: 15px; }
   .ct-cmd__link { font-size: 15px; }
@@ -193,6 +330,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ct-line,
-  .ct__cmds.is-ready { animation: none; }
+  .ct__cmds.is-ready,
+  .ct-resume,
+  .ct-resume__book { animation: none; }
   .ct-dots::after { animation: none; content: '...'; }
 }
