@@ -28,7 +28,7 @@ export const profile = {
   bio: 'Hey I\'m Jason, a Second-year student at UNSW doinc Computer Science. I am a passionate person with a strong interest in newly emerging tech/AI and building cool solutions. I enjoy building a variety of applications that are full stack and AI-powered.',
   avatarCaption: 'Jason Tjandra',
   traits: [
-    { slot: 'helmet', label: 'Class', value: 'Full-Stack & AI Builder' },
+    { slot: 'helmet', label: 'Class', value: 'Full-Stack & AI Enthusiast' },
     { slot: 'chestplate', label: 'Level', value: 'CS Student · Year 2 (UNSW)' },
     { slot: 'leggings', label: 'Spawn', value: 'Sydney, NSW' },
     { slot: 'boots', label: 'Status', value: 'Online — open to opportunities' },
@@ -140,18 +140,16 @@ export type ActiveQuest = {
   title: string;
   type: QuestType;
   detail: string;
-  progress: number;
   link?: string;
 };
 
 /** What I'm building, learning or reading right now: pinned notes on the Quest Board. */
 export const activeQuests: ActiveQuest[] = [
-  { title: 'Origin Story™', type: 'building', detail: 'Lead dev on a live coaching platform: video curriculum, AI coaching tools and more.', progress: 70 },
-  { title: 'Uni Management System', type: 'building', detail: 'Offline-first study tracker with myUNSW timetable import.', progress: 55 },
-  { title: 'Machine Learning & Data Mining', type: 'learning', detail: 'UNSW coursework alongside AI. [CHECK] swap for whatever you are learning now.', progress: 40 },
-  { title: 'Next Hackathon', type: 'hackathon', detail: 'Looking for the next one after FoundersHack 2026. [PLACEHOLDER]', progress: 10 },
+  { title: 'Origin Story™', type: 'building', detail: 'I am still actively developing Origin Story, whether its new tools or features, something new is always waiting to be developed' },
+  { title: 'Self-Made Notes App', type: 'building', detail: 'I plan to make my own notetaking app and host it on my computer, I want to combine the notetaking features of Notion with the Maintenance features of Obsidian' },
+  { title: 'Machine Learning', type: 'learning', detail: 'I\m currently learning the various concepts of Machine Learning for one of my courses, I am planning to also build a predictive project with this knowledge in the future' },
+  { title: 'Next Hackathon', type: 'hackathon', detail: 'I\'m always looking for new Hackathons and opportunities to build cool things!' },
 ];
-// [CHECK] progress values are rough guesses.
 
 export type SideQuest = {
   title: string;
@@ -161,7 +159,7 @@ export type SideQuest = {
 
 /** Hobbies & life outside the editor. */
 export const sideQuests: SideQuest[] = [
-  { title: 'Gaming', detail: 'I grew up watching alot of Minecraft and was addicted to it during highschool. Now I mainly play Valorant and League of Legends', icon: 'craft-keyboard' },
+  { title: 'Gaming', detail: 'I grew up watching alot of Minecraft as you can seeand was addicted to it during highschool as you. Now I mainly play Valorant and League of Legends', icon: 'craft-keyboard' },
   { title: 'Gym', detail: 'Started going again this year after being very inconsistent throughout highschool', icon: 'heart' },
   { title: 'Eating', detail: 'I LOVE eating, I enjoy trying new places and eating out whenever I can. Asian cuisine is my favourite (especially Malatang)', icon: 'hunger' },
   { title: 'Going Out', detail: 'I always enjoy spending time out with my friends, whether its just for a quick feed or walking around the same area for 3 hours', icon: 'contact-location' },

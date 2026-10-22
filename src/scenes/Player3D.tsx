@@ -10,7 +10,7 @@ import './player3d.css';
  * 3D Minecraft player rendered from a standard 64×64 skin (public/skins/player.png).
  * Replace that PNG with any skin to change the look; pick a pose per screen in the registry.
  */
-export type Pose = 'idle' | 'wave' | 'walk' | 'laptop' | 'crossed' | 'think' | 'point' | 'cheer' | 'sit';
+export type Pose = 'idle' | 'wave' | 'walk' | 'laptop' | 'crossed' | 'think' | 'point' | 'cheer' | 'sit' | 'peek';
 
 type Player3DProps = {
   pose?: Pose;
@@ -167,6 +167,11 @@ function applyPose(p: PlayerObject, pose: Pose, t: number) {
       s.leftArm.rotation.set(-0.25 + breathe * 0.02, 0, -0.18);
       p.position.y = -10.5;
       break;
+    case 'peek':
+      // leaning over an open chest: hands on the rim, rummaging a little
+      s.rightArm.rotation.set(-0.6 + Math.sin(t * 1.3) * 0.05, 0, 0.12);
+      s.leftArm.rotation.set(-0.75 + Math.sin(t * 1.3 + 1.2) * 0.05, 0, -0.12);
+      break;
     case 'idle':
     default:
       break;
@@ -320,12 +325,17 @@ export function Player3D({
       applyPose(player, currentPose, t);
       laptop.visible = currentPose === 'laptop';
       // ease body turn + head look
-      const fy = FACING_Y[facingRef.current];
+      // peeking: turn a bit further toward what's in front of you
+      const fy = FACING_Y[facingRef.current] * (currentPose === 'peek' ? 1.7 : 1);
       player.rotation.y += (fy - player.rotation.y) * 0.08;
       look.x += (target.x - look.x) * 0.1;
       look.y += (target.y - look.y) * 0.1;
       const down = currentPose === 'laptop' ? 0.25 : 0;
-      if (facingRef.current.startsWith('away')) {
+      if (currentPose === 'peek') {
+        // eyes down into the chest, no cursor tracking
+        player.skin.head.rotation.y = Math.sin(t * 0.6) * 0.12;
+        player.skin.head.rotation.x = 0.7 + Math.sin(t * 0.4) * 0.04;
+      } else if (facingRef.current.startsWith('away')) {
         // gazing out over the scene: no cursor tracking, head tilted slightly down
         player.skin.head.rotation.y = Math.sin(t * 0.25) * 0.15;
         player.skin.head.rotation.x = 0.15;

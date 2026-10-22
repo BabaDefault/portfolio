@@ -1,7 +1,6 @@
 import { useRef, useState, type CSSProperties, type KeyboardEvent } from 'react';
 import { Panel } from '../ui/Panel';
 import { McButton } from '../ui/McButton';
-import { ProgressBar } from '../ui/ProgressBar';
 import { ItemIcon, type IconName } from '../ui/ItemIcon';
 import { activeQuests, sideQuests, type QuestType } from '../data/content';
 import { sfx } from '../audio/sfx';
@@ -104,13 +103,6 @@ export default function QuestsScreen() {
                   <span className={`quest-tag quest-tag--${q.type}`}>{typeLabels[q.type]}</span>
                   <h4 className="quest-note__title">{q.title}</h4>
                   <p className="quest-note__detail">{q.detail}</p>
-                  <div className="quest-note__progress">
-                    <span className="quest-note__meta" aria-hidden="true">
-                      <span>Quest progress</span>
-                      <span>{q.progress}%</span>
-                    </span>
-                    <ProgressBar value={q.progress} height={8} label={`${q.title}: quest progress ${q.progress}%`} />
-                  </div>
                   {q.link && (
                     <McButton size="sm" href={q.link} className="quest-note__link" aria-label={`View ${q.title}`}>
                       View
