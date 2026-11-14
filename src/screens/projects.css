@@ -327,6 +327,8 @@
   margin-top: 6px;
   font-family: var(--font-ui);
   font-size: 13px;
+  line-height: 1.45;
+  min-height: calc(2em * 1.45); /* reserve two lines so the arrows below don't jump between captions */
   color: #d8d8d8;
   text-shadow: 1px 1px 0 #1e1e1e;
 }
@@ -377,6 +379,14 @@
 }
 .pj-gallery__thumb--on img,
 .pj-gallery__thumb:hover img { opacity: 1; }
+
+/* Live site / demo / source links, under the thumbnail strip */
+.pj-gallery__links {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.pj-gallery__links > .mc-btn { flex: 1; min-width: 0; }
 
 /* Empty state: a painting of the world thumbnail on a dark wall */
 .pj-gallery__empty {

@@ -3,6 +3,6 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  // The lazily-loaded 3D player chunk (three.js) is ~510 KB by design.
-  build: { chunkSizeWarningLimit: 600 },
+  // The lazily-loaded three.js chunk (3D player + ?fly world) is ~715 KB by design.
+  build: { chunkSizeWarningLimit: 750 },
 });

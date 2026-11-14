@@ -4,17 +4,11 @@ import { useNav } from '../nav';
 import { Panel } from '../ui/Panel';
 import { McButton } from '../ui/McButton';
 import { PixelIcon } from '../ui/PixelIcon';
-import { ItemIcon, type IconName } from '../ui/ItemIcon';
 import { TooltipBox } from '../ui/Tooltip';
 import { Player3D } from '../scenes/LazyPlayer3D';
-import { armor, hotbarArt } from '../icons/profile';
+import { armor } from '../icons/profile';
 import { sfx } from '../audio/sfx';
 import './profile.css';
-
-const HOTBAR_SLOTS = 9;
-
-/** Hotbar items that have a PNG icon; the rest fall back to the code-drawn art. */
-const hotbarIcons: Record<string, IconName> = { laptop: 'craft-laptop', keyboard: 'craft-keyboard' };
 
 /** A slot-styled button that shows a Minecraft tooltip on hover and focus. */
 function TipSlot({
@@ -65,7 +59,6 @@ function TipSlot({
 
 export default function ProfileScreen() {
   const { go } = useNav();
-  const hotbar = Array.from({ length: HOTBAR_SLOTS }, (_, i) => profile.hotbarItems[i]);
 
   return (
     <Panel variant="stone" width={520} title="Player Profile" aside="Inventory" className="profile-panel" labelledBy="profile-title">
@@ -106,26 +99,6 @@ export default function ProfileScreen() {
 
       <h3 className="profile-heading">Bio</h3>
       <p className="profile-bio">{profile.bio}</p>
-
-      <h3 className="profile-heading">Hotbar</h3>
-      <ul className="profile-hotbar" aria-label="Hotbar items">
-        {hotbar.map((item, i) => {
-          const png = item ? hotbarIcons[item.toLowerCase()] : undefined;
-          const art = item ? hotbarArt[item.toLowerCase()] : undefined;
-          const align = i < 2 ? 'start' : i > HOTBAR_SLOTS - 3 ? 'end' : 'center';
-          return (
-            <li key={i}>
-              {item ? (
-                <TipSlot label={item} title={item} body={<span className="profile-tip__kind">Everyday carry</span>} align={align} onActivate={() => sfx.pop()}>
-                  {png ? <ItemIcon name={png} size={28} /> : art ? <PixelIcon art={art} size={28} /> : <span className="profile-hotbar__letter">{item[0]}</span>}
-                </TipSlot>
-              ) : (
-                <span className="slot profile-hotbar__empty" aria-hidden="true" />
-              )}
-            </li>
-          );
-        })}
-      </ul>
 
       <div className="profile-actions">
         <McButton onClick={() => go('journey')}>View Journey</McButton>

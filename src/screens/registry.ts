@@ -40,6 +40,8 @@ export type ScreenDef = {
   pose: Pose;
   /** Stand with your back to the camera, overlooking the scene. */
   faceAway?: boolean;
+  /** Override which way the body turns (default: toward the screen centre, away from the player's side). */
+  facing?: 'left' | 'right' | 'front';
   /** Ignore the cursor: body stays angled toward the scene, head turns to look at the viewer. */
   faceViewer?: boolean;
   /** Minecraft-style speech bubble over the player. */
@@ -64,7 +66,7 @@ export const screens: ScreenDef[] = [
   { id: 'title', pose: 'wave', faceViewer: true, speech: 'Welcome to my Portfolio!', label: 'Title Screen', biome: 'ocean', icon: { name: 'hero' }, placement: 'center', player: 'right', layout: { playerInset: '9vw', playerBottom: '7vh' }, backdrop: { name: 'Sunflower Plains', hudColor: '#ffff55', mood: 'ocean' }, Component: TitleScreen },
   { id: 'profile', pose: 'laptop', label: 'Player Profile', biome: 'cherry', icon: { name: 'about' }, placement: 'left', player: 'left', layout: { playerInset: '42vw', playerBottom: '29vh', playerHeight: 300 }, backdrop: { name: 'Old Growth Taiga', hudColor: '#ffaa00', mood: 'village' }, Component: ProfileScreen },
   { id: 'skills', pose: 'read', label: 'Brewing — Skills', biome: 'nether', icon: { name: 'skills' }, placement: 'right', player: 'left', anchor: { x: 47.4, feetY: 68.8, height: 0.3, clipY: 62.7 }, backdrop: { name: 'Nether Fortress', hudColor: '#ff5555', mood: 'nether' }, Component: SkillsScreen },
-  { id: 'projects', pose: 'peek', label: 'Select World — Projects', biome: 'mineshaft', icon: { name: 'projects' }, placement: 'left', player: 'right', layout: { panelY: 'bottom', playerInset: '5vw', playerBottom: '17.5vh' }, backdrop: { name: 'Mineshaft Ravine', hudColor: '#ff55ff', mood: 'mineshaft' }, Component: ProjectsScreen },
+  { id: 'projects', pose: 'peek', facing: 'right', label: 'Select World — Projects', biome: 'mineshaft', icon: { name: 'projects' }, placement: 'left', player: 'right', layout: { panelY: 'bottom' }, anchor: { x: 58.8, feetY: 74.5, height: 0.42 }, backdrop: { name: 'Mineshaft Ravine', hudColor: '#ff55ff', mood: 'mineshaft' }, Component: ProjectsScreen },
   { id: 'journey', pose: 'sit', faceAway: true, label: 'Treasure Map — Journey', biome: 'cherry', icon: { name: 'experience' }, placement: 'left', player: 'right', layout: { playerInset: '-1.9vw', playerBottom: '11.3vh' }, backdrop: { name: 'Cherry Grove', hudColor: '#ff9ad5', mood: 'cherry' }, Component: JourneyScreen },
   { id: 'advancements', pose: 'lantern', faceAway: true, label: 'Advancements', biome: 'deepdark', icon: { name: 'achievements' }, placement: 'right', player: 'left', layout: { playerInset: '11.5vw', playerBottom: '13.8vh', playerHeight: 340 }, backdrop: { name: 'Deep Dark', hudColor: '#55ffff', mood: 'deepdark' }, Component: AdvancementsScreen },
   { id: 'quests', pose: 'point', label: 'Quest Board', biome: 'village', icon: { name: 'craft-books' }, placement: 'left', player: 'right', layout: { playerInset: '7vw', playerBottom: '10vh' }, backdrop: { name: 'Home', hudColor: '#55ff55', mood: 'village' }, Component: QuestsScreen },

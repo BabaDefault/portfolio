@@ -1,0 +1,600 @@
+/* ---------- 3D flight mode ---------- */
+.fly-root {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #bfc5e1;
+  user-select: none;
+}
+.fly-canvas {
+  position: absolute !important;
+  inset: 0;
+  z-index: 0;
+  cursor: grab;
+}
+.fly-canvas:active { cursor: grabbing; }
+
+.fly-root kbd {
+  display: inline-block;
+  min-width: 1.6em;
+  padding: 0 4px;
+  font-family: var(--font-display);
+  font-size: 0.72em;
+  line-height: 1.6;
+  text-align: center;
+  color: #fff;
+  background: #3a3a40;
+  border: 1px solid #000;
+  box-shadow: inset 0 -2px 0 #1f1f24, inset 0 1px 0 #6a6a72;
+}
+
+/* Hide the flight instruments while a section's panel is open */
+.fly-root.is-landed .fly-debug,
+.fly-root.is-landed .fly-top,
+.fly-root.is-landed .fly-minimap,
+.fly-root.is-landed .fly-classic { opacity: 0; pointer-events: none; }
+.fly-debug, .fly-top, .fly-minimap, .fly-classic { transition: opacity 300ms; }
+
+/* ---------- F3 text ---------- */
+.fly-debug {
+  position: absolute;
+  top: 10px;
+  left: 12px;
+  z-index: 10;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.35;
+  color: #e8e8e8;
+  text-shadow: var(--text-shadow-dark);
+  pointer-events: none;
+}
+.fly-debug > div {
+  width: fit-content;
+  min-height: 1.35em;
+  padding: 0 4px;
+  background: rgba(0, 0, 0, 0.35);
+}
+.fly-accent { color: var(--mc-yellow); }
+
+/* ---------- Compass + boss bar ---------- */
+.fly-top {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+}
+.fly-top.is-dim { opacity: 0.35; }
+.fly-compass {
+  position: relative;
+  width: min(480px, 46vw);
+  height: 34px;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.45);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 2px #4a4a4f;
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.fly-compass__strip {
+  position: absolute;
+  inset: 0 auto 0 0;
+  will-change: transform;
+}
+.fly-compass__tick {
+  position: absolute;
+  bottom: 3px;
+  width: 2px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.45);
+}
+.fly-compass__tick.is-major { height: 8px; background: rgba(255, 255, 255, 0.85); }
+.fly-compass__tick b {
+  position: absolute;
+  bottom: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 400;
+  color: #fff;
+  text-shadow: 1px 1px 0 #000;
+}
+.fly-compass__marker {
+  position: absolute;
+  top: 3px;
+  left: 0;
+  width: 13px;
+  height: 13px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 8px;
+  color: #000;
+  border: 1px solid #000;
+  will-change: transform;
+}
+.fly-compass__marker.is-target { outline: 2px solid #fff; }
+.fly-compass__caret {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(50% - 1px);
+  width: 2px;
+  background: var(--mc-yellow);
+  box-shadow: 0 0 0 1px #000;
+}
+
+.fly-bossbar { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+.fly-bossbar__title {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  text-shadow: var(--text-shadow-dark);
+}
+.fly-bossbar__title span { color: #fff; }
+.fly-bossbar__bar {
+  width: min(300px, 40vw);
+  height: 7px;
+  background: #1b1b1b;
+  border: 1px solid #000;
+}
+.fly-bossbar__fill {
+  height: 100%;
+  width: 2%;
+  box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.35);
+}
+
+/* ---------- Map item (minimap) ---------- */
+.fly-minimap {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+.fly-minimap__map {
+  position: relative;
+  display: block;
+  width: 148px;
+  height: 148px;
+  padding: 6px;
+  background: var(--panel-parchment-bg);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 2px var(--panel-parchment-edge), 0 4px 0 rgba(0, 0, 0, 0.3);
+}
+.fly-minimap:hover .fly-minimap__map { box-shadow: inset 0 0 0 2px #fff, 0 4px 0 rgba(0, 0, 0, 0.3); }
+.fly-minimap__inner { position: absolute; inset: 6px; }
+.fly-minimap__inner > img,
+.fly-worldmap__map > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+.fly-minimap__key {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: #fff;
+  text-shadow: var(--text-shadow-dark);
+}
+.fly-map__dot,
+.fly-map__arrow,
+.fly-map__pin { position: absolute; }
+.fly-map__dot {
+  width: 6px;
+  height: 6px;
+  transform: translate(-50%, -50%);
+  border: 1px solid #000;
+}
+.fly-map__arrow {
+  width: 9px;
+  height: 11px;
+  background: #fff;
+  clip-path: polygon(50% 0, 100% 100%, 50% 75%, 0 100%);
+  filter: drop-shadow(0 0 1px #000);
+}
+/* ---------- Classic-view escape hatch ---------- */
+.fly-classic {
+  position: absolute;
+  top: 196px;
+  right: 12px;
+  z-index: 10;
+  padding: 4px 10px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: #e0e0e0;
+  text-decoration: none;
+  text-shadow: var(--text-shadow-dark);
+  background: rgba(0, 0, 0, 0.45);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 2px #4a4a4f;
+}
+.fly-classic:hover { color: var(--btn-text-hover); box-shadow: inset 0 0 0 2px #fff; }
+
+/* ---------- Full world map ---------- */
+.fly-worldmap {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.55);
+  animation: screen-in 220ms var(--ease-out) both;
+}
+.fly-worldmap__inner {
+  width: min(920px, 100%);
+  max-height: calc(100vh - 32px);
+  overflow: auto;
+  padding: 14px 16px 12px;
+  font-family: var(--font-ui);
+  color: #fff;
+  background: rgba(16, 16, 20, 0.94);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 2px #4a4a4f;
+}
+.fly-worldmap__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  font-family: var(--font-display);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mc-yellow);
+  text-shadow: var(--text-shadow-dark);
+}
+.fly-worldmap__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+}
+.fly-worldmap__map {
+  position: relative;
+  aspect-ratio: 1;
+  padding: 0;
+  background: var(--panel-parchment-bg);
+  border: 2px solid #000;
+  box-shadow: 0 0 0 4px var(--panel-parchment-edge);
+}
+.fly-map__pin {
+  width: 22px;
+  height: 22px;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: #000;
+  border: 2px solid #000;
+  cursor: pointer;
+}
+.fly-map__pin:hover { outline: 2px solid #fff; z-index: 1; }
+.fly-worldmap__map .fly-map__arrow { width: 14px; height: 17px; }
+.fly-worldmap__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.fly-worldmap__list button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  text-align: left;
+  color: #fff;
+  font: inherit;
+  background: rgba(255, 255, 255, 0.04);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 1px #3a3a40;
+  cursor: pointer;
+}
+.fly-worldmap__list button:hover,
+.fly-worldmap__list button:focus-visible { background: rgba(255, 255, 255, 0.12); box-shadow: inset 0 0 0 1px #fff; outline: none; }
+.fly-worldmap__num {
+  flex: none;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 11px;
+  color: #000;
+  border: 2px solid #000;
+}
+.fly-worldmap__name { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.fly-worldmap__name b { font-weight: 400; font-size: 15px; text-shadow: var(--text-shadow-dark); }
+.fly-worldmap__name small { font-size: 12px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fly-worldmap__seen {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: 9px;
+  color: var(--mc-green);
+  text-transform: uppercase;
+}
+.fly-worldmap__foot { margin: 10px 0 0; font-size: 12px; color: var(--text-faint); text-align: center; }
+
+.fly-x {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-family: var(--font-display);
+  font-size: 16px;
+  line-height: 1;
+  color: #e0e0e0;
+  background: #3a3a40;
+  border: 2px solid #000;
+  cursor: pointer;
+}
+.fly-x:hover { color: var(--btn-text-hover); }
+
+/* ---------- Hotbar, action bar, boost ---------- */
+.fly-hotbar { z-index: 12; }
+.fly-actionbar {
+  min-height: 26px;
+  display: flex;
+  align-items: center;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  color: #fff;
+  text-shadow: var(--text-shadow-dark);
+  text-align: center;
+}
+.fly-land {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 12px 4px 6px;
+  font: inherit;
+  color: #fff;
+  text-shadow: var(--text-shadow-dark);
+  background: rgba(16, 0, 16, 0.82);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 2px #2b0f5e;
+  cursor: pointer;
+  animation: fly-pulse 1.6s ease-in-out infinite;
+}
+.fly-land:hover { box-shadow: inset 0 0 0 2px #fff; }
+@keyframes fly-pulse {
+  50% { transform: translateY(-2px); }
+}
+.fly-boost__fill {
+  width: 100%;
+  background: #ffb13b;
+  box-shadow: inset 0 -2px 0 #b8611a;
+  transition: none;
+}
+
+/* ---------- Controls card ---------- */
+.fly-controls {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 10;
+  padding: 10px 34px 10px 12px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: #fff;
+  text-shadow: var(--text-shadow-dark);
+  background: rgba(16, 0, 16, 0.84);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 2px #2b0f5e;
+}
+.fly-controls dl { margin: 0; display: grid; gap: 4px; }
+.fly-controls dl > div { display: grid; grid-template-columns: 88px auto; align-items: center; gap: 8px; }
+.fly-controls dt { display: flex; gap: 3px; align-items: center; color: var(--text-dim); }
+.fly-controls dd { margin: 0; }
+.fly-controls .fly-x { position: absolute; top: 6px; right: 6px; width: 22px; height: 22px; font-size: 13px; }
+.fly-controls__touch { display: none; margin: 0; max-width: 200px; }
+.fly-controls-toggle {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 10;
+  padding: 4px 10px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: #e0e0e0;
+  background: rgba(0, 0, 0, 0.45);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 2px #4a4a4f;
+  cursor: pointer;
+}
+@media (hover: none) {
+  .fly-controls dl { display: none; }
+  .fly-controls__touch { display: block; }
+}
+
+/* ---------- Name tags over the beacons ---------- */
+.fly-tags {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  overflow: hidden;
+  pointer-events: none;
+}
+.fly-tag {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 7px 3px 3px;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  color: #fff;
+  white-space: nowrap;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+}
+.fly-tag__num {
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 10px;
+  color: #000;
+  text-shadow: none;
+  border: 1px solid #000;
+}
+.fly-tag__dist { font-size: 13px; color: #d0d0d0; }
+
+/* ---------- Landed: the section panel ---------- */
+.fly-panel { z-index: 6; }
+.fly-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  animation: screen-in 500ms var(--ease-out) both;
+}
+.fly-scrim--left { background: linear-gradient(90deg, rgba(10, 8, 20, 0.55), rgba(10, 8, 20, 0.15) 50%, transparent 70%); }
+.fly-scrim--right { background: linear-gradient(270deg, rgba(10, 8, 20, 0.55), rgba(10, 8, 20, 0.15) 50%, transparent 70%); }
+.fly-takeoff {
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 11;
+  animation: screen-in 400ms var(--ease-out) 300ms both;
+}
+.fly-takeoff kbd { margin-left: 6px; }
+
+/* ---------- Loading ---------- */
+.fly-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  font-family: var(--font-ui);
+  color: #fff;
+  text-shadow: var(--text-shadow-dark);
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+    repeating-conic-gradient(#4a3523 0 25%, #3f2c1d 0 50%) 0 0 / 32px 32px;
+  transition: opacity 700ms ease, visibility 0s linear 700ms;
+}
+.fly-loading.is-done { opacity: 0; visibility: hidden; }
+.fly-loading__title { font-size: 18px; }
+.fly-loading__bar { width: min(320px, 70vw); height: 6px; background: #1b1b1b; border: 1px solid #000; }
+.fly-loading__bar span { display: block; height: 100%; background: var(--xp); transition: width 400ms; }
+.fly-loading__tip { font-size: 13px; color: var(--text-dim); }
+
+.fly-unsupported {
+  display: grid;
+  place-content: center;
+  gap: 16px;
+  font-family: var(--font-ui);
+  color: #fff;
+  text-align: center;
+  background: #1b1b20;
+}
+
+@media (max-width: 760px) {
+  .fly-debug { display: none; }
+  .fly-minimap__map { width: 104px; height: 104px; }
+  .fly-classic { top: 150px; }
+  .fly-sound { top: 184px; }
+  .fly-compass { width: 54vw; }
+}
+
+/* ---------- Welcome card (before the first take-off) ---------- */
+.fly-intro {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 24px max(16px, 7vw);
+  pointer-events: none;
+  background: linear-gradient(90deg, rgba(10, 8, 20, 0.5), rgba(10, 8, 20, 0.12) 55%, transparent 75%);
+  animation: screen-in 700ms var(--ease-out) 250ms both;
+}
+.fly-intro__card {
+  pointer-events: auto;
+  width: min(420px, 100%);
+  padding: 26px 26px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  font-family: var(--font-ui);
+  color: var(--panel-parchment-ink);
+  background: var(--panel-parchment-bg);
+  border: 4px solid #000;
+  box-shadow:
+    inset 0 0 0 4px var(--panel-parchment-edge),
+    inset 0 0 0 6px rgba(255, 255, 255, 0.25),
+    0 10px 0 rgba(0, 0, 0, 0.35);
+  user-select: text;
+}
+.fly-intro__icon {
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  background: var(--slot-bg);
+  border: 2px solid #000;
+  box-shadow: inset 3px 3px 0 var(--slot-lo), inset -3px -3px 0 var(--slot-hi);
+}
+.fly-intro__eyebrow {
+  margin: 6px 0 0;
+  font-family: var(--font-display);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8a5a22;
+}
+.fly-intro__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(26px, 4vw, 34px);
+  line-height: 1.1;
+  color: #2a1c0e;
+  text-shadow: 2px 2px 0 rgba(183, 156, 102, 0.9);
+}
+.fly-intro__text { margin: 2px 0 0; font-size: 16px; line-height: 1.45; }
+.fly-intro__text--dim { color: #6b5536; margin-bottom: 8px; }
+.fly-intro__skip {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #6b5536;
+  text-decoration: underline;
+}
+.fly-intro__skip:hover { color: #2a1c0e; }
+@media (max-width: 760px) {
+  .fly-intro { justify-content: center; align-items: flex-end; padding-bottom: 32px; background: linear-gradient(0deg, rgba(10, 8, 20, 0.55), transparent 70%); }
+}
+
+.fly-sound { top: 230px; cursor: pointer; font: inherit; font-family: var(--font-ui); font-size: 13px; }

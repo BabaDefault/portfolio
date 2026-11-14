@@ -109,7 +109,7 @@ function webglAvailable() {
 }
 
 /** Sets the limbs for a pose at time t (seconds). */
-function applyPose(p: PlayerObject, pose: Pose, t: number) {
+export function applyPose(p: PlayerObject, pose: Pose, t: number) {
   const s = p.skin;
   const breathe = Math.sin(t * 1.6);
   // neutral base (skinview3d: +z swings the left arm outward, -z the right)
