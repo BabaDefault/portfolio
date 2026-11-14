@@ -10,7 +10,7 @@ import { ItemIcon } from '../../ui/ItemIcon';
 import { PixelIcon } from '../../ui/PixelIcon';
 import { useProgress } from '../../progress';
 import { site } from '../../data/content';
-import { sfx } from '../../audio/sfx';
+import { isMuted, onMuteChange, setMuted, sfx } from '../../audio/sfx';
 import type { Dest } from '../destinations';
 import { HALF, MIN_Y, N, SEA, col, inside, islandNear, type World } from '../generate';
 import { bearingOf, facingName, flight, flyTo, land, onFlightFrame, useFlightUi } from '../flight';
@@ -497,6 +497,22 @@ function NameTags({ dests }: { dests: Dest[] }) {
   );
 }
 
+/** Turns the music and sound effects on or off (remembered between visits). */
+function SoundToggle() {
+  const [muted, setM] = useState(isMuted);
+  useEffect(() => {
+    const off = onMuteChange(setM);
+    return () => {
+      off();
+    };
+  }, []);
+  return (
+    <button type="button" className="fly-classic fly-sound" aria-pressed={!muted} onClick={() => setMuted(!muted)}>
+      Sound: {muted ? 'off' : 'on'}
+    </button>
+  );
+}
+
 export function FlightHud({
   world,
   avgSrgb,
@@ -520,6 +536,7 @@ export function FlightHud({
       <a className="fly-classic" href={classicHref}>
         Classic view
       </a>
+      <SoundToggle />
       {ui.mode === 'fly' && <ControlsCard />}
       <FlightHotbar dests={world.dests} />
       {mapOpen && <WorldMap dests={world.dests} image={image} onClose={() => setMapOpen(false)} />}

@@ -523,6 +523,7 @@
   .fly-debug { display: none; }
   .fly-minimap__map { width: 104px; height: 104px; }
   .fly-classic { top: 150px; }
+  .fly-sound { top: 184px; }
   .fly-compass { width: 54vw; }
 }
 
@@ -595,3 +596,5 @@
 @media (max-width: 760px) {
   .fly-intro { justify-content: center; align-items: flex-end; padding-bottom: 32px; background: linear-gradient(0deg, rgba(10, 8, 20, 0.55), transparent 70%); }
 }
+
+.fly-sound { top: 230px; cursor: pointer; font: inherit; font-family: var(--font-ui); font-size: 13px; }

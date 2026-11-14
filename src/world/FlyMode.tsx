@@ -24,6 +24,7 @@ import { Pickups } from './scene/Pickups';
 import { IslandFx } from './scene/IslandFx';
 import { Wildlife } from './scene/Wildlife';
 import { FlightHud } from './hud/FlightHud';
+import { startMusic } from './music';
 import './world.css';
 
 type Built = { world: World; atlas: Atlas; chunks: Chunk[]; meshes: THREE.BufferGeometry[]; material: THREE.Material; water: THREE.Texture };
@@ -158,6 +159,10 @@ export default function FlyMode() {
   const reduced = useMemo(reducedMotion, []);
   const ui = useFlightUi();
   const onReady = useCallback(() => setReady(true), []);
+  const begin = useCallback(() => {
+    startMusic();
+    takeOff();
+  }, []);
 
   // Generate after the loading screen has painted.
   useEffect(() => {
@@ -188,7 +193,7 @@ export default function FlyMode() {
       const u = getUi();
       if (u.mode === 'intro') {
         // the card's button handles Enter/Space itself when focused
-        if (e.code === 'Enter' && (e.target as HTMLElement | null)?.tagName !== 'BUTTON' && ready) takeOff();
+        if (e.code === 'Enter' && (e.target as HTMLElement | null)?.tagName !== 'BUTTON' && ready) begin();
         return;
       }
       const held = KEYMAP[e.code];
@@ -239,7 +244,7 @@ export default function FlyMode() {
       window.removeEventListener('keyup', onUp);
       window.removeEventListener('blur', release);
     };
-  }, [mapOpen, ready]);
+  }, [mapOpen, ready, begin]);
 
   // Stop steering when the panel opens.
   useEffect(() => {
@@ -270,7 +275,7 @@ export default function FlyMode() {
         </Canvas>
       )}
       {built && !intro && <FlightHud world={built.world} avgSrgb={built.atlas.avgSrgb} mapOpen={mapOpen} setMapOpen={setMapOpen} />}
-      {built && ready && intro && <IntroCard onBegin={takeOff} />}
+      {built && ready && intro && <IntroCard onBegin={begin} />}
       {ui.mode === 'landed' && ui.landed && <LandedPanel id={ui.landed} />}
       <div className={`fly-loading ${ready ? 'is-done' : ''}`} aria-hidden={ready}>
         <div className="fly-loading__title">{built ? 'Spawning player…' : 'Generating islands…'}</div>
