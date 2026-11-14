@@ -598,3 +598,124 @@
 }
 
 .fly-sound { top: 230px; cursor: pointer; font: inherit; font-family: var(--font-ui); font-size: 13px; }
+
+/* ---------- Touch controls (phones and tablets) ---------- */
+.fly-root { touch-action: none; overscroll-behavior: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.fly-touch {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: calc(var(--hotbar-h) + 64px + env(safe-area-inset-bottom, 0px));
+  z-index: 11;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 max(14px, env(safe-area-inset-left, 0px)) 0 max(14px, env(safe-area-inset-right, 0px));
+  pointer-events: none;
+}
+.fly-stick {
+  pointer-events: auto;
+  position: relative;
+  width: 124px;
+  height: 124px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.32);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.45);
+}
+.fly-stick__knob {
+  position: absolute;
+  left: calc(50% - 26px);
+  top: calc(50% - 26px);
+  width: 52px;
+  height: 52px;
+  background: #c6c6c6;
+  border: 2px solid #000;
+  box-shadow: inset 3px 3px 0 #fff, inset -3px -3px 0 #555;
+  will-change: transform;
+}
+.fly-touch__buttons { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; pointer-events: none; }
+.fly-touch__btn {
+  pointer-events: auto;
+  width: 76px;
+  height: 60px;
+  font-family: var(--font-display);
+  font-size: 12px;
+  color: #fff;
+  text-shadow: 2px 2px 0 #000;
+  background: rgba(60, 60, 66, 0.82);
+  border: 2px solid #000;
+  box-shadow: inset 2px 2px 0 #9a9aa2, inset -2px -2px 0 #2c2c30;
+}
+.fly-touch__btn:active { background: #7d86b8; }
+.fly-touch__btn--tnt { background: rgba(200, 48, 38, 0.86); box-shadow: inset 2px 2px 0 #f08a80, inset -2px -2px 0 #7a1a14; }
+.fly-touch__btn--boost { width: 92px; height: 72px; background: rgba(214, 140, 30, 0.88); box-shadow: inset 2px 2px 0 #ffd27a, inset -2px -2px 0 #8a5510; }
+
+/* ---------- "Running slowly?" notice ---------- */
+.fly-slow {
+  position: absolute;
+  top: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 25;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: calc(100vw - 24px);
+  padding: 6px 8px 6px 12px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: #fff;
+  background: rgba(16, 0, 16, 0.9);
+  border: 2px solid #000;
+  box-shadow: inset 0 0 0 2px #2b0f5e;
+}
+.fly-slow a { color: var(--mc-yellow); }
+
+/* ---------- Phone layout ---------- */
+.fly-root .hotbar-wrap { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
+@media (max-width: 760px) {
+  .fly-top { top: calc(8px + env(safe-area-inset-top, 0px)); left: 12px; transform: none; align-items: flex-start; }
+  .fly-compass { width: calc(100vw - 150px); height: 28px; }
+  .fly-bossbar { align-items: flex-start; }
+  .fly-bossbar__bar { width: calc(100vw - 150px); }
+  .fly-minimap { top: calc(8px + env(safe-area-inset-top, 0px)); }
+  .fly-minimap__key { display: none; }
+  .fly-classic { top: calc(124px + env(safe-area-inset-top, 0px)); padding: 3px 8px; font-size: 12px; }
+  .fly-sound { top: calc(154px + env(safe-area-inset-top, 0px)); font-size: 12px; }
+  .fly-tag { font-size: 13px; }
+  .fly-actionbar { font-size: 13px; max-width: calc(100vw - 24px); }
+  .fly-worldmap { padding: 8px; }
+  .fly-worldmap__body { grid-template-columns: 1fr; }
+  .fly-worldmap__map { max-width: min(100%, 46vh); margin: 0 auto; }
+  .fly-intro__card { padding: 18px 18px 14px; gap: 7px; }
+  .fly-intro__icon { width: 60px; height: 60px; }
+  .fly-intro__icon .pixel-icon { width: 40px; height: 40px; }
+  .fly-intro__text { font-size: 14px; }
+  .fly-takeoff { top: calc(8px + env(safe-area-inset-top, 0px)); }
+}
+/* short, wide screens (a phone held sideways): tuck the controls down beside the hotbar */
+@media (max-height: 520px) {
+  .fly-touch { bottom: calc(12px + env(safe-area-inset-bottom, 0px)); }
+  .fly-stick { width: 104px; height: 104px; }
+  .fly-touch__buttons { flex-direction: row; align-items: flex-end; }
+  .fly-classic, .fly-sound { display: none; }
+  .fly-minimap__map { width: 84px; height: 84px; }
+  .fly-intro { align-items: center; padding: 8px; }
+  .fly-intro__card { padding: 12px 16px; gap: 4px; }
+  .fly-intro__icon, .fly-intro__text--dim { display: none; }
+  .fly-root .status { display: none; }
+}
+
+.fly-intro__card { box-sizing: border-box; }
+.fly-intro__card > * { max-width: 100%; }
+.fly-intro__text, .fly-intro__title { align-self: stretch; overflow-wrap: anywhere; }
+
+/* Section panels stay scrollable and selectable on touch screens */
+.fly-panel { touch-action: pan-y; -webkit-overflow-scrolling: touch; user-select: text; -webkit-user-select: text; }
+.fly-worldmap__inner { touch-action: pan-y; }
+.is-touch .fly-takeoff kbd,
+.is-touch .fly-worldmap__foot { display: none; }
+.is-touch.is-landed .status,
+.is-touch.is-landed .hotbar-label,
+.is-touch.is-landed .fly-actionbar { display: none; }

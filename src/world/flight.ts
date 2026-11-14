@@ -27,6 +27,8 @@ export const flight = {
   blasts: [] as { x: number; y: number; z: number; hit: boolean }[],
   mode: 'intro' as FlightMode,
   input: { up: false, down: false, left: false, right: false, boost: false },
+  /** Touch joystick, -1..1 on each axis (x right, y down). */
+  axis: { x: 0, y: 0 },
   /** Camera orbit offset from dragging (radians), eased back to 0 when released. */
   look: { yaw: 0, pitch: 0, dragging: false },
   /** Set when the player strays too far out to sea and the world turns them back. */
