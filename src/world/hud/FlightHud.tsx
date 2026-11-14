@@ -15,6 +15,7 @@ import type { Dest } from '../destinations';
 import { HALF, MIN_Y, N, SEA, col, inside, islandNear, type World } from '../generate';
 import { bearingOf, facingName, flight, flyTo, land, onFlightFrame, useFlightUi } from '../flight';
 import { tagEls } from '../scene/Beacons';
+import { quality } from '../quality';
 
 const short = (dests: Dest[], id: ScreenId | null) => dests.find((d) => d.id === id)?.name ?? '';
 const beaconPos = (d: Dest) => ({ x: d.x + 0.5, z: d.z + 0.5 });
@@ -337,11 +338,11 @@ function ActionBar({ dests }: { dests: Dest[] }) {
     return (
       <div className="fly-actionbar">
         <button type="button" className="fly-land" onClick={() => land(ui.near!)}>
-          <kbd>E</kbd> Land at {short(dests, ui.near)}
+          {!quality.touch && <kbd>E</kbd>} Land at {short(dests, ui.near)}
         </button>
       </div>
     );
-  if (intro) return <div className="fly-actionbar">Pick a slot on the hotbar (1–9) to fly there, or steer yourself: chase the orbs, bomb the sea stacks</div>;
+  if (intro) return <div className="fly-actionbar">{quality.touch ? 'Tap a hotbar slot to fly there, or steer with the stick' : 'Pick a slot on the hotbar (1–9) to fly there, or steer yourself: chase the orbs, bomb the sea stacks'}</div>;
   return <div className="fly-actionbar" />;
 }
 
@@ -537,7 +538,7 @@ export function FlightHud({
         Classic view
       </a>
       <SoundToggle />
-      {ui.mode === 'fly' && <ControlsCard />}
+      {ui.mode === 'fly' && !quality.touch && <ControlsCard />}
       <FlightHotbar dests={world.dests} />
       {mapOpen && <WorldMap dests={world.dests} image={image} onClose={() => setMapOpen(false)} />}
     </>

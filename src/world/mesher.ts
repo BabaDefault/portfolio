@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { GLOW, T, tileUV, type Atlas } from './atlas';
 import { HALF, MIN_Y, col, inside, key, unkey, type Chunk, type World } from './generate';
 import { hash3 } from './noise';
+import { quality } from './quality';
 
 class Buf {
   data: Float32Array;
@@ -143,8 +144,8 @@ function sideTile(top: number, depth: number, x: number, y: number, z: number) {
   return t;
 }
 
-/** Turn down (or set to 0) to thin out the plants if the frame rate needs it. */
-const PLANT_DENSITY = 1;
+/** Share of the plants that get drawn (thinned out on phones). */
+const PLANT_DENSITY = quality.plants;
 /** Plants that grow on each ground tile: [cumulative chance, tile, height]. */
 const PLANTS: Partial<Record<number, [number, number, number][]>> = {
   [T.grassTop]: [[0.1, T.tallGrass, 0.9]],

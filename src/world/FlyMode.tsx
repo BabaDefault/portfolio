@@ -24,7 +24,10 @@ import { Pickups } from './scene/Pickups';
 import { IslandFx } from './scene/IslandFx';
 import { Wildlife } from './scene/Wildlife';
 import { FlightHud } from './hud/FlightHud';
+import { TouchControls } from './hud/TouchControls';
 import { startMusic } from './music';
+import { quality } from './quality';
+import { onFlightFrame } from './flight';
 import './world.css';
 
 type Built = { world: World; atlas: Atlas; chunks: Chunk[]; meshes: THREE.BufferGeometry[]; material: THREE.Material; water: THREE.Texture };
@@ -102,6 +105,35 @@ function IntroCard({ onBegin }: { onBegin: () => void }) {
           or browse the classic site
         </a>
       </section>
+    </div>
+  );
+}
+
+/** If the world runs badly for a while, offer the classic site. */
+function SlowNotice() {
+  const [slow, setSlow] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
+  useEffect(() => {
+    let frames = 0;
+    let start = 0;
+    return onFlightFrame(() => {
+      const now = performance.now();
+      if (!start) start = now;
+      frames++;
+      if (now - start < 6000) return;
+      if ((frames * 1000) / (now - start) < 18) setSlow(true);
+      frames = 0;
+      start = now;
+    });
+  }, []);
+  if (!slow || dismissed) return null;
+  return (
+    <div className="fly-slow" role="status">
+      <span>Running slowly on this device?</span>
+      <a href={`${window.location.pathname}?classic`}>Open the classic site</a>
+      <button type="button" className="fly-x" onClick={() => setDismissed(true)} aria-label="Dismiss">
+        ×
+      </button>
     </div>
   );
 }
@@ -262,13 +294,13 @@ export default function FlyMode() {
 
   const intro = ui.mode === 'intro';
   return (
-    <main className={`fly-root app ${ui.mode === 'landed' ? 'is-landed' : ''}`}>
+    <main className={`fly-root app ${ui.mode === 'landed' ? 'is-landed' : ''} ${quality.touch ? 'is-touch' : ''}`}>
       {built && (
         <Canvas
           className="fly-canvas"
           flat
-          dpr={[1, 1.6]}
-          gl={{ antialias: true, powerPreference: 'high-performance' }}
+          dpr={quality.dpr}
+          gl={{ antialias: quality.antialias, powerPreference: 'high-performance' }}
           camera={{ fov: 42, near: 0.1, far: 3400, position: [0, 50, 240] }}
         >
           <WorldScene built={built} reduced={reduced} onReady={onReady} />
@@ -276,6 +308,8 @@ export default function FlyMode() {
       )}
       {built && !intro && <FlightHud world={built.world} avgSrgb={built.atlas.avgSrgb} mapOpen={mapOpen} setMapOpen={setMapOpen} />}
       {built && ready && intro && <IntroCard onBegin={begin} />}
+      {built && quality.touch && ui.mode === 'fly' && !mapOpen && <TouchControls />}
+      {built && ui.mode === 'fly' && <SlowNotice />}
       {ui.mode === 'landed' && ui.landed && <LandedPanel id={ui.landed} />}
       <div className={`fly-loading ${ready ? 'is-done' : ''}`} aria-hidden={ready}>
         <div className="fly-loading__title">{built ? 'Spawning player…' : 'Generating islands…'}</div>

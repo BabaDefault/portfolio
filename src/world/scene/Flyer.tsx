@@ -210,9 +210,10 @@ export function Flyer({ world, reduced }: { world: World; reduced: boolean }) {
 
     // ---- Flight ----
     if (flight.mode === 'fly') {
-      let turn = (inp.left ? 1 : 0) - (inp.right ? 1 : 0);
-      let climb = (inp.up ? 1 : 0) - (inp.down ? 1 : 0);
-      const manual = turn !== 0 || climb !== 0;
+      // keys, or the touch joystick (pushing it up climbs)
+      let turn = clamp((inp.left ? 1 : 0) - (inp.right ? 1 : 0) - flight.axis.x, -1, 1);
+      let climb = clamp((inp.up ? 1 : 0) - (inp.down ? 1 : 0) - flight.axis.y, -1, 1);
+      const manual = Math.abs(turn) > 0.08 || Math.abs(climb) > 0.08;
       if (manual && ui.target) cancelAutopilot();
 
       const fwd = forward(flight.yaw, 0, v.a);
@@ -386,15 +387,18 @@ export function Flyer({ world, reduced }: { world: World; reduced: boolean }) {
       const sway = reduced ? 0 : Math.sin(s.t * 0.15) * 0.1;
       const ax = s.approach.x * Math.cos(sway) - s.approach.y * Math.sin(sway);
       const az = s.approach.x * Math.sin(sway) + s.approach.y * Math.cos(sway);
-      desiredPos.set(s.spot.x + ax * 8.4, s.spot.y + 3.1, s.spot.z + az * 8.4);
+      // portrait screens (phones): the card or panel sits at the bottom, so step back and frame the player up top
+      const portrait = cam.aspect < 0.8;
+      const back = portrait ? 12.5 : 8.4;
+      desiredPos.set(s.spot.x + ax * back, s.spot.y + 3.1, s.spot.z + az * back);
       desiredPos.x += Math.sin(flight.look.yaw) * 4;
       desiredPos.y += Math.sin(flight.look.pitch) * 4;
       const rx = az;
       const rz = -ax;
       // the panel takes the left unless the screen puts it on the right; the player stands opposite
-      const side = def?.placement === 'right' ? 1 : -1;
+      const side = portrait ? 0 : def?.placement === 'right' ? 1 : -1;
       const lift = flight.mode === 'takeoff' ? flight.pos.y - halfHeight - s.spot.y : 0;
-      desiredLook.set(s.spot.x + rx * 2.3 * side, s.spot.y + 1.4 + lift * 0.8, s.spot.z + rz * 2.3 * side);
+      desiredLook.set(s.spot.x + rx * 2.3 * side, s.spot.y + (portrait ? -1.6 : 1.4) + lift * 0.8, s.spot.z + rz * 2.3 * side);
       fov = 42;
     }
     const camFloor = surfaceAt(world, desiredPos.x, desiredPos.z, desiredPos.y) + 1.4;

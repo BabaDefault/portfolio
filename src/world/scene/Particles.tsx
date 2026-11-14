@@ -5,11 +5,12 @@ import * as THREE from 'three';
 import { flight, forward } from '../flight';
 import type { World } from '../generate';
 import { atmo } from './Environment';
+import { quality } from '../quality';
 
 const BOX = new THREE.Vector3(90, 50, 90);
 
 export function Petals({ reduced, world }: { reduced: boolean; world: World }) {
-  const count = reduced ? 220 : 650;
+  const count = reduced ? 220 : quality.petals;
   const points = useRef<THREE.Points>(null);
   const { geometry, vel, material } = useMemo(() => {
     const pos = new Float32Array(count * 3);
