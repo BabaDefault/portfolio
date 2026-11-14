@@ -7,7 +7,7 @@ import type { IconName } from '../ui/ItemIcon';
 
 export const site = {
   name: 'Jason',
-  title: 'Jason Codes',
+  title: "Jason's MC World",
   subtitle: 'Survival · Hard Mode',
   version: 'v1.0.0',
   footer: 'Built by Jason Tjandra. Not affiliated with Mojang or Microsoft.',
@@ -68,6 +68,7 @@ export type Project = {
   thumb: { sky: string; ground: string }; // colors for the code-drawn world thumbnail
   live?: string;
   repo?: string;
+  demo?: string; // demo video
   /** Optional bullet points shown in the expanded world view. */
   highlights?: string[];
   /**
@@ -87,6 +88,14 @@ export const projects: Project[] = [
     description: 'Lead developer, rebuilding and extending the founder\'s prototype with Next.js App Router and Supabase, adding a video curriculum and new tools. Integrated the Claude API behind a server-side route for AI script reviews and idea coaching, with zod-validated structured output and per-user LLM usage tracking. Designed a Postgres schema across 70 versioned SQL migrations, using Supabase Auth and row-level security to separate client, CSM and admin access; deployed on Vercel with auto-deploys from Git.',
     year: 'Aug 2026 – now', mode: 'Survival', tags: ['Next.js', 'React', 'Tailwind', 'Postgres', 'Claude API', 'Vercel'],
     thumb: { sky: '#f6b26b', ground: '#5d9c3a' },
+    images: [
+      { src: '00-login.webp', alt: 'Origin Story sign-in page with the mascot on an illustrated landscape', caption: 'Sign-in page' },
+      { src: '01-home-dashboard.webp', alt: 'Origin Story home dashboard with profile, checklist and content calendar', caption: 'Client dashboard: brand kit, onboarding checklist and posting streaks' },
+      { src: '02-roadmap.webp', alt: 'Roadmap of seven coaching phases with progress bars', caption: 'Seven-phase roadmap with per-phase progress' },
+      { src: '03-content-workflow.webp', alt: 'Kanban content board and weekly posting plan', caption: 'Content workflow: idea → script → film → edit, plus the week\'s plan' },
+      { src: '04-film-kit.webp', alt: 'Film look picker in the kit setup wizard', caption: 'Kit setup wizard: pick a film look and setup once' },
+      { src: '05-send-content.webp', alt: 'Send a reel, carousel or script for review', caption: 'Send reels, carousels and scripts for coach or AI review' },
+    ],
   },
   {
     id: 'uni-management', name: 'Uni Management System', summary: 'Offline-first app to track subtopic mastery per subject and week.',
@@ -99,9 +108,18 @@ export const projects: Project[] = [
     description: 'Scans repos for leaked secrets, injection flaws and misconfigurations, built in a team of 4 at the FoundersHack 2026 hackathon. I co-designed the architecture, built the interactive 3D attack-chain graph (Three.js, Next.js) that shows how linked findings combine into exploitable paths, and implemented compliance scoring modelled on SOC 2, OWASP and GDPR with PDF export. It sits alongside the team\'s OpenAI-powered fix suggestions and a Qdrant layer that suppresses near-duplicate false positives.',
     year: 'Mar 2026', mode: 'Hardcore', tags: ['Next.js', 'Three.js', 'Express', 'MySQL', 'Qdrant'],
     thumb: { sky: '#3b1d4f', ground: '#6b2a2a' },
+    repo: 'https://github.com/joon48072/Signal',
+    demo: 'https://youtu.be/3bG5Q-gvvfo',
+    images: [
+      { src: '01-landing.webp', alt: 'Signal landing page: "Ship faster, Without Stress."', caption: 'Landing page' },
+      { src: '02-findings-overview.webp', alt: 'Scan results with security score, severity breakdown and a file-by-severity heatmap', caption: 'Scan results: security score, severity breakdown and per-file heatmap' },
+      { src: '03-findings.webp', alt: 'Vulnerability table with severity, category, file and line, score and resolve actions', caption: 'Every finding with file and line, score and one-click resolve' },
+      { src: '04-memory-graph.webp', alt: 'Knowledge graph linking a scan event to its findings, with a finding detail panel', caption: 'Memory: knowledge graph of scans, findings and remediations' },
+      { src: '05-pitch.webp', alt: 'FoundersHack 2026 closing slide: "Ship fast without blind spots"', caption: 'FoundersHack 2026 pitch close' },
+    ],
   },
   {
-    id: 'portfolio', name: 'Jason Codes', summary: 'This Minecraft-themed portfolio.',
+    id: 'portfolio', name: "Jason's MC World", summary: 'This Minecraft-themed portfolio.',
     description: 'A game-UI portfolio: hotbar navigation, a 3D player built from my own skin (three.js), animated effects layered on custom backgrounds, and sounds synthesized with the Web Audio API.',
     year: '2026', mode: 'Adventure', tags: ['React', 'TypeScript', 'three.js', 'Vite'],
     thumb: { sky: '#7ec0ee', ground: '#5d9c3a' },

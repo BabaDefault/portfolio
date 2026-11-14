@@ -190,6 +190,17 @@ export function ProjectWorld({ project: p, modeClass, onBack }: Props) {
               <p className="pj-gallery__empty-text">This world hasn’t been mapped. Check back soon!</p>
             </div>
           )}
+          {(p.live || p.demo || p.repo) && (
+            <div className="pj-gallery__links">
+              {p.live && (
+                <McButton href={p.live} sound="levelUp">
+                  Visit Live Site
+                </McButton>
+              )}
+              {p.demo && <McButton href={p.demo}>Watch Demo</McButton>}
+              {p.repo && <McButton href={p.repo}>View Source</McButton>}
+            </div>
+          )}
         </div>
 
         <div className="pj-world__info">
@@ -227,12 +238,6 @@ export function ProjectWorld({ project: p, modeClass, onBack }: Props) {
       </div>
 
       <div className="pj-actions pj-world__actions">
-        {p.live && (
-          <McButton href={p.live} sound="levelUp">
-            Visit Live Site
-          </McButton>
-        )}
-        {p.repo && <McButton href={p.repo}>View Source</McButton>}
         <McButton onClick={onBack} className="pj-world__back">
           Back to Worlds
         </McButton>

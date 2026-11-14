@@ -165,9 +165,10 @@ export default function App() {
             pose={screen.pose}
             lighting={playerLighting[current] ?? defaultLighting}
             facing={
-              screen.faceAway
+              screen.facing ??
+              (screen.faceAway
                 ? screen.player === 'left' ? 'awayRight' : 'awayLeft'
-                : screen.player === 'right' ? 'left' : screen.player === 'left' ? 'right' : 'front'
+                : screen.player === 'right' ? 'left' : screen.player === 'left' ? 'right' : 'front')
             }
             height={anchorHeight ?? screen.layout?.playerHeight ?? 380}
             trackCursor={!screen.faceViewer}

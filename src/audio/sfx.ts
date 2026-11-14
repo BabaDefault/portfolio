@@ -107,6 +107,11 @@ export const sfx = {
   deny() {
     tone({ freq: 160, dur: 0.12, type: 'square', gain: 0.04 });
   },
+  /** TNT explosion */
+  boom() {
+    noise(0.55, 0.14, 420);
+    tone({ freq: 95, to: 38, dur: 0.45, type: 'sine', gain: 0.14 });
+  },
   /** Portal/whoosh for big transitions */
   portal() {
     tone({ freq: 90, to: 360, dur: 0.6, type: 'sine', gain: 0.05 });
